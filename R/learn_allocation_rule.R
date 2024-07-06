@@ -129,7 +129,7 @@ learn_allocation_rule <- function(
   # -------------------------------------------------------------------------
   # Execute reinforcement learning ------------------------------------------
   # -------------------------------------------------------------------------
-  reticulate::source_python("inst/python/MCPModEnv.py")
+  reticulate::source_python(system.file("python/MCPModEnv.py", package = "RLoptimal"))
 
   env_config <- list(
     doses = doses, K = K,

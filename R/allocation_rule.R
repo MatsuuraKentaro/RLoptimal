@@ -4,7 +4,10 @@
 #' This class represents an allocation rule that generates a next allocation.
 #'
 #' @field policy The RLlib policy that is a Python object.
-#' @field dir The directory path of the allocation rule (policy).
+#' @field dir Directory path of the allocation rule (policy).
+#' @field dirpath Full path to the directory of the allocation rule.
+#' @field created_at Created time of this object.
+#' @field info
 #'
 #' @export
 AllocationRule <- R6Class(
@@ -111,7 +114,7 @@ AllocationRule <- R6Class(
       actions <- action_list[as.character(doses)]
 
       # Obtain the probabilities of next actions
-      reticulate::source_python("inst/python/MCPModEnv.py")
+      reticulate::source_python(system.file("python/MCPModEnv.py", package = "RLoptimal"))
       state <- MCPModEnv$compute_state(actions, responses, N_total)
       info <- policy$compute_single_action(state, full_fetch = TRUE)[[3]]
       action_probs <- info$action_dist_inputs  # array

@@ -11,7 +11,13 @@ This class represents an allocation rule that generates a next allocation.
 \describe{
 \item{\code{policy}}{The RLlib policy that is a Python object.}
 
-\item{\code{dir}}{The directory path of the allocation rule (policy).}
+\item{\code{dir}}{Directory path of the allocation rule (policy).}
+
+\item{\code{dirpath}}{Full path to the directory of the allocation rule.}
+
+\item{\code{created_at}}{Created time of this object.}
+
+\item{\code{info}}{}
 }
 \if{html}{\out{</div>}}
 }
