@@ -4,29 +4,45 @@
 #'        dose-response models.
 #' @param N_total A positive integer value. The total number of subjects.
 #' @param N_ini A positive integer value or vector. The number of subjects
-#'        allocated equally among dose groups initially.
+#'        initially allocated equally among dose groups or the number of subjects
+#'        initially assigned to each dose.
 #' @param N_block A positive integer value. The number of subjects allocated
 #'        adaptively in each round. This may differ from the actual clinical trials.
 #' @param Delta A positive numeric value. The clinically relevant target effect.
+#'        See \link[DoseFinding]{TD} for details.
 #' @param sd_normal A positive numeric value. The standard deviation of the
 #'        observation noise.
 #' @param optimization_metric A character value specifying the metric to
 #'        optimize. Possible values are "MAE" (default), "TD", "power", or "MS".
 #'        See Section 2.2 of the original paper for details.
-#' @param rl_models An object of class \link[DoseFinding]{Mods}.
-#' @param rl_models_prior A positive numeric vector.
-#' @param rl_seed An integer value.
-#' @param rl_config A list.
+#' @param rl_models An object of class \link[DoseFinding]{Mods}. True dose-response
+#'        models in simulations for reinforcement learning. The default is the
+#'        same as the 'models' argument. Empirically, employing a wide variety of
+#'        models tends to improve performance.
+#' @param rl_models_prior A positive numeric vector. The probability or weight
+#'        with which each model in rl_models is selected as the true model in
+#'        the simulation. The default is NULL, which specifies equal probability
+#'        for each model.
+#' @param rl_seed An integer value. Random seed for reinforcement learning.
+#' @param rl_config A list. Other settings for reinforcement learning. See
+#'        \link{rl_config} for details.
 #' @param alpha A positive numeric value. The significance level. Default is 0.025.
 #' @param selModel A character value specifying the model selection criterion
 #'        for dose estimation. Possible values are "AIC" (default), "maxT", or
 #'        "aveAIC". See \link[DoseFinding]{MCPMod} for details.
-#' @param Delta_range A numeric vector of length 2.
-#' @param output_dir
-#' @param output_base_dir
-#' @param checkpoint_dir
-#' @param save_start_iter
-#' @param save_every_iter
+#' @param Delta_range A numeric vector of length 2. The lower and upper bounds
+#'        of Delta where the estimated target dose is correct. Default is
+#'        `c(0.9, 1.1) * Delta`.
+#' @param output_dir A character value. Directory name or path to store the
+#'        built allocation rule. Default is the current datetime.
+#' @param output_base_dir A character value. Parent directory path where the
+#'        built allocation rule will be stored. Valid only if 'output_dir' does
+#'        not contain '/'. Default is "allocation_rules".
+#' @param checkpoint_dir A character value. Parent directory path to save
+#'        checkpoints. It enables you to resume learning from that point onwards.
+#'        Default is "checkpoints".
+#' @param save_start_iter,save_every_iter An integer value. Save checkpoints every
+#'        'save_every_iter' iterations starting from 'save_start_iter' or later.
 #'
 #' @returns An \link{AllocationRule} object.
 #'

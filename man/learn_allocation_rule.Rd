@@ -33,12 +33,14 @@ dose-response models.}
 \item{N_total}{A positive integer value. The total number of subjects.}
 
 \item{N_ini}{A positive integer value or vector. The number of subjects
-allocated equally among dose groups initially.}
+initially allocated equally among dose groups or the number of subjects
+initially assigned to each dose.}
 
 \item{N_block}{A positive integer value. The number of subjects allocated
 adaptively in each round. This may differ from the actual clinical trials.}
 
-\item{Delta}{A positive numeric value. The clinically relevant target effect.}
+\item{Delta}{A positive numeric value. The clinically relevant target effect.
+See \link[DoseFinding]{TD} for details.}
 
 \item{sd_normal}{A positive numeric value. The standard deviation of the
 observation noise.}
@@ -47,13 +49,20 @@ observation noise.}
 optimize. Possible values are "MAE" (default), "TD", "power", or "MS".
 See Section 2.2 of the original paper for details.}
 
-\item{rl_models}{An object of class \link[DoseFinding]{Mods}.}
+\item{rl_models}{An object of class \link[DoseFinding]{Mods}. True dose-response
+models in simulations for reinforcement learning. The default is the
+same as the 'models' argument. Empirically, employing a wide variety of
+models tends to improve performance.}
 
-\item{rl_models_prior}{A positive numeric vector.}
+\item{rl_models_prior}{A positive numeric vector. The probability or weight
+with which each model in rl_models is selected as the true model in
+the simulation. The default is NULL, which specifies equal probability
+for each model.}
 
-\item{rl_seed}{An integer value.}
+\item{rl_seed}{An integer value. Random seed for reinforcement learning.}
 
-\item{rl_config}{A list.}
+\item{rl_config}{A list. Other settings for reinforcement learning. See
+\link{rl_config} for details.}
 
 \item{alpha}{A positive numeric value. The significance level. Default is 0.025.}
 
@@ -61,9 +70,23 @@ See Section 2.2 of the original paper for details.}
 for dose estimation. Possible values are "AIC" (default), "maxT", or
 "aveAIC". See \link[DoseFinding]{MCPMod} for details.}
 
-\item{Delta_range}{A numeric vector of length 2.}
+\item{Delta_range}{A numeric vector of length 2. The lower and upper bounds
+of Delta where the estimated target dose is correct. Default is
+\code{c(0.9, 1.1) * Delta}.}
 
-\item{save_every_iter}{}
+\item{output_dir}{A character value. Directory name or path to store the
+built allocation rule. Default is the current datetime.}
+
+\item{output_base_dir}{A character value. Parent directory path where the
+built allocation rule will be stored. Valid only if 'output_dir' does
+not contain '/'. Default is "allocation_rules".}
+
+\item{checkpoint_dir}{A character value. Parent directory path to save
+checkpoints. It enables you to resume learning from that point onwards.
+Default is "checkpoints".}
+
+\item{save_start_iter, save_every_iter}{An integer value. Save checkpoints every
+'save_every_iter' iterations starting from 'save_start_iter' or later.}
 }
 \value{
 An \link{AllocationRule} object.
