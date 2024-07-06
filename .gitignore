@@ -1,0 +1,8 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+RLoptimal.Rproj
+__pycache__
+checkpoints
+allocation_rules

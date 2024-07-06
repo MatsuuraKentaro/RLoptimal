@@ -1,0 +1,28 @@
+Package: RLoptimal
+Title: Optimal Adaptive Allocation Using Deep Reinforcement Learning
+Version: 0.0.0.9000
+Authors@R: c(
+    person("Kentaro", "Matsuura", , "4419703@ed.tus.ac.jp", role = c("aut", "cre"), 
+           comment = c(ORCID = "0000-0001-5262-055X")),
+    person("Koji", "Makiyama", , "hoxo.smile@gmail.com", role = c("ctb")))
+Description: Optimal adaptive allocation using deep reinforcement learning.
+License: file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
+Imports: 
+    DoseFinding,
+    glue,
+    R6,
+    reticulate,
+    utils
+Collate:
+    'utils.R'
+    'allocation_rule.R'
+    'generate_setup_code.R'
+    'rl_dnn_config.R'
+    'rl_config.R'
+    'learn_allocation_rule.R'
+    'setup_python.R'
+    'zzz.R'
+    'cleanup_python_settings.R'

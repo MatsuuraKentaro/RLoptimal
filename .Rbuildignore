@@ -1,0 +1,8 @@
+^RLoptimal\.Rproj$
+^\.Rproj\.user$
+^\.Rhistory$
+^\.gitignore$
+__pycache__
+^README\.Rmd$
+checkpoints
+allocation_rules
