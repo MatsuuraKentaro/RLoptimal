@@ -114,6 +114,7 @@ AllocationRule <- R6Class(
       actions <- action_list[as.character(doses)]
 
       # Obtain the probabilities of next actions
+      reticulate::source_python(system.file("python/RProcess.py", package = "RLoptimal"))
       reticulate::source_python(system.file("python/MCPModEnv.py", package = "RLoptimal"))
       state <- MCPModEnv$compute_state(actions, responses, N_total)
       info <- policy$compute_single_action(state, full_fetch = TRUE)[[3]]
