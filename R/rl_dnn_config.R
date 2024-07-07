@@ -1,5 +1,6 @@
-#' DNN (deep neural network) configuration for reinforcement learning
+#' DNN Configuration for Reinforcement Learning
 #'
+#' DNN (deep neural network) configuration for reinforcement learning.
 #' For detail, see Section 3.2.6 of the original paper.
 #'
 #' @param fcnet_hiddens A positive integer vector. Numbers of units of the

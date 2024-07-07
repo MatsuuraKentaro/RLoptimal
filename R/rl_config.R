@@ -1,4 +1,4 @@
-#' Configuration of reinforcement learning
+#' Configuration of Reinforcement Learning
 #'
 #' Mainly settings for the arguments of the training() function.
 #' Not compatible with the new API stack introduced in Ray 2.10.0.
@@ -12,7 +12,7 @@
 #' @param train_batch_size A positive integer value. Training batch size.
 #'        Deprecated on the new API stack.
 #' @param model A list. Arguments passed into the policy model. See
-#'        \code{\link{rl_dnn_config}} for details.
+#'        \link{rl_dnn_config} for details.
 #' @param sgd_minibatch_size A positive integer value. Total SGD batch size
 #'        across all devices for SGD. Deprecated on the new API stack.
 #' @param num_sgd_iter A positive integer value. Number of SGD iterations in
