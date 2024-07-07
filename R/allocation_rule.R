@@ -7,7 +7,9 @@
 #' @field dir Directory path of the allocation rule (policy).
 #' @field dirpath Full path to the directory of the allocation rule.
 #' @field created_at Created time of this object.
-#' @field info
+#' @field info Information when learning the allocation rule.
+#' @field input Inputs for learning the allocation rule.
+#' @field log The log of scores during the learning of the allocation rule.
 #'
 #' @export
 AllocationRule <- R6Class(
@@ -60,15 +62,15 @@ AllocationRule <- R6Class(
       self$created_at <- Sys.time()
     },
 
-    set_info = function(info) {
+    #' @description
+    #' Set information when learning the allocation rule.
+    #'
+    #' @param info Information when learning the allocation rule.
+    #' @param input Inputs for learning the allocation rule.
+    #' @param log The log of scores during the learning of the allocation rule.
+    set_info = function(info, input, log) {
       self$info <- info
-    },
-
-    set_input = function(input) {
       self$input <- input
-    },
-
-    set_log = function(log) {
       self$log <- log
     },
 
@@ -124,6 +126,9 @@ AllocationRule <- R6Class(
       action_probs
     },
 
+    #' @description
+    #' Print function for AllocationRule object
+    #'
     #' @importFrom glue glue
     print = function() {
       print(glue("<AllocationRule>"))

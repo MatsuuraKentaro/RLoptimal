@@ -224,22 +224,18 @@ learn_allocation_rule <- function(
     checkpoint_path <- save_result$checkpoint$path
     message(glue("Checkpoint saved in directory '{checkpoint_path}'"))
   }
-
   algo$stop()
 
+  # Export allocation rule (policy)
   policy <- algo$get_policy(policy_id = "default_policy")
   policy$export_checkpoint(output_path)  # return NULL
   message(glue("Allocation rule saved in directory '{output_path}'"))
 
+  # Create AllocationRule object
   allocation_rule <- AllocationRule$new(dir = output_path)
-
   info <- list(call = match.call(), iterations = N_update)
-  allocation_rule$set_info(info)
-
   input <- Map(eval, as.list(info$call)[-1L])
-  allocation_rule$set_input(input)
-
-  allocation_rule$set_log(episode_data)
+  allocation_rule$set_info(info, input, episode_data)
 
   allocation_rule
 }

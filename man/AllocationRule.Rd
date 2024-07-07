@@ -17,7 +17,11 @@ This class represents an allocation rule that generates a next allocation.
 
 \item{\code{created_at}}{Created time of this object.}
 
-\item{\code{info}}{}
+\item{\code{info}}{Information when learning the allocation rule.}
+
+\item{\code{input}}{Inputs for learning the allocation rule.}
+
+\item{\code{log}}{The log of scores during the learning of the allocation rule.}
 }
 \if{html}{\out{</div>}}
 }
@@ -26,8 +30,6 @@ This class represents an allocation rule that generates a next allocation.
 \itemize{
 \item \href{#method-AllocationRule-new}{\code{AllocationRule$new()}}
 \item \href{#method-AllocationRule-set_info}{\code{AllocationRule$set_info()}}
-\item \href{#method-AllocationRule-set_input}{\code{AllocationRule$set_input()}}
-\item \href{#method-AllocationRule-set_log}{\code{AllocationRule$set_log()}}
 \item \href{#method-AllocationRule-get_next_action_probs}{\code{AllocationRule$get_next_action_probs()}}
 \item \href{#method-AllocationRule-print}{\code{AllocationRule$print()}}
 \item \href{#method-AllocationRule-clone}{\code{AllocationRule$clone()}}
@@ -60,28 +62,22 @@ not used otherwise.}
 \if{html}{\out{<a id="method-AllocationRule-set_info"></a>}}
 \if{latex}{\out{\hypertarget{method-AllocationRule-set_info}{}}}
 \subsection{Method \code{set_info()}}{
+Set information when learning the allocation rule.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AllocationRule$set_info(info)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AllocationRule$set_info(info, input, log)}\if{html}{\out{</div>}}
 }
 
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AllocationRule-set_input"></a>}}
-\if{latex}{\out{\hypertarget{method-AllocationRule-set_input}{}}}
-\subsection{Method \code{set_input()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AllocationRule$set_input(input)}\if{html}{\out{</div>}}
-}
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{info}}{Information when learning the allocation rule.}
 
-}
-\if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AllocationRule-set_log"></a>}}
-\if{latex}{\out{\hypertarget{method-AllocationRule-set_log}{}}}
-\subsection{Method \code{set_log()}}{
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AllocationRule$set_log(log)}\if{html}{\out{</div>}}
-}
+\item{\code{input}}{Inputs for learning the allocation rule.}
 
+\item{\code{log}}{The log of scores during the learning of the allocation rule.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AllocationRule-get_next_action_probs"></a>}}
@@ -112,6 +108,7 @@ A vector of the probabilities of the next action.
 \if{html}{\out{<a id="method-AllocationRule-print"></a>}}
 \if{latex}{\out{\hypertarget{method-AllocationRule-print}{}}}
 \subsection{Method \code{print()}}{
+Print function for AllocationRule object
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AllocationRule$print()}\if{html}{\out{</div>}}
 }
