@@ -2,7 +2,7 @@
 % Please edit documentation in R/learn_allocation_rule.R
 \name{learn_allocation_rule}
 \alias{learn_allocation_rule}
-\title{Build an optimal adaptive allocation rule using reinforcement learning}
+\title{Build an Optimal Adaptive Allocation Rule using Reinforcement Learning}
 \usage{
 learn_allocation_rule(
   models,
@@ -92,5 +92,5 @@ Default is "checkpoints".}
 An \link{AllocationRule} object.
 }
 \description{
-Build an optimal adaptive allocation rule using reinforcement learning
+Build an Optimal Adaptive Allocation Rule using Reinforcement Learning
 }

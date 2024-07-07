@@ -29,8 +29,8 @@ This class represents an allocation rule that generates a next allocation.
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-AllocationRule-new}{\code{AllocationRule$new()}}
-\item \href{#method-AllocationRule-set_info}{\code{AllocationRule$set_info()}}
 \item \href{#method-AllocationRule-get_next_action_probs}{\code{AllocationRule$get_next_action_probs()}}
+\item \href{#method-AllocationRule-set_info}{\code{AllocationRule$set_info()}}
 \item \href{#method-AllocationRule-print}{\code{AllocationRule$print()}}
 \item \href{#method-AllocationRule-clone}{\code{AllocationRule$clone()}}
 }
@@ -59,27 +59,6 @@ not used otherwise.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AllocationRule-set_info"></a>}}
-\if{latex}{\out{\hypertarget{method-AllocationRule-set_info}{}}}
-\subsection{Method \code{set_info()}}{
-Set information when learning the allocation rule.
-\subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AllocationRule$set_info(info, input, log)}\if{html}{\out{</div>}}
-}
-
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{info}}{Information when learning the allocation rule.}
-
-\item{\code{input}}{Inputs for learning the allocation rule.}
-
-\item{\code{log}}{The log of scores during the learning of the allocation rule.}
-}
-\if{html}{\out{</div>}}
-}
-}
-\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AllocationRule-get_next_action_probs"></a>}}
 \if{latex}{\out{\hypertarget{method-AllocationRule-get_next_action_probs}{}}}
 \subsection{Method \code{get_next_action_probs()}}{
@@ -102,6 +81,27 @@ each participant for the 'doses' argument.}
 }
 \subsection{Returns}{
 A vector of the probabilities of the next action.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AllocationRule-set_info"></a>}}
+\if{latex}{\out{\hypertarget{method-AllocationRule-set_info}{}}}
+\subsection{Method \code{set_info()}}{
+Set information when learning the allocation rule.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AllocationRule$set_info(info, input, log)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{info}}{Information when learning the allocation rule.}
+
+\item{\code{input}}{Inputs for learning the allocation rule.}
+
+\item{\code{log}}{The log of scores during the learning of the allocation rule.}
+}
+\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}

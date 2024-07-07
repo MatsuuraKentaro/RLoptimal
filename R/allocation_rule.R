@@ -63,18 +63,6 @@ AllocationRule <- R6Class(
     },
 
     #' @description
-    #' Set information when learning the allocation rule.
-    #'
-    #' @param info Information when learning the allocation rule.
-    #' @param input Inputs for learning the allocation rule.
-    #' @param log The log of scores during the learning of the allocation rule.
-    set_info = function(info, input, log) {
-      self$info <- info
-      self$input <- input
-      self$log <- log
-    },
-
-    #' @description
     #' Obtain the probabilities of the next action.
     #'
     #' @param doses A numeric vector. The doses actually administered to each
@@ -124,6 +112,18 @@ AllocationRule <- R6Class(
       action_probs <- as.vector(action_probs)  # cast to numeric vector
       action_probs <- softmax(action_probs)
       action_probs
+    },
+
+    #' @description
+    #' Set information when learning the allocation rule.
+    #'
+    #' @param info Information when learning the allocation rule.
+    #' @param input Inputs for learning the allocation rule.
+    #' @param log The log of scores during the learning of the allocation rule.
+    set_info = function(info, input, log) {
+      self$info <- info
+      self$input <- input
+      self$log <- log
     },
 
     #' @description

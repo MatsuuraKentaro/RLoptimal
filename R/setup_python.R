@@ -1,3 +1,8 @@
+#' Setting up a Python Virtual Environment
+#'
+#' Setting up a Python virtual environment for the Ray package, which includes
+#' the RLlib library for reinforcement learning.
+#'
 #' @export
 setup_python <- function() {
   py_version <- "3.11"

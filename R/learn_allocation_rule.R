@@ -1,4 +1,4 @@
-#' Build an optimal adaptive allocation rule using reinforcement learning
+#' Build an Optimal Adaptive Allocation Rule using Reinforcement Learning
 #'
 #' @param models An object of class \link[DoseFinding]{Mods} specifying assumed
 #'        dose-response models.
