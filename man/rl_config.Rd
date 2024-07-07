@@ -2,7 +2,7 @@
 % Please edit documentation in R/rl_config.R
 \name{rl_config}
 \alias{rl_config}
-\title{Configuration of reinforcement learning}
+\title{Configuration of Reinforcement Learning}
 \usage{
 rl_config(
   iter = 500L,
@@ -31,7 +31,7 @@ a learning schedule instead of a learning rate.}
 Deprecated on the new API stack.}
 
 \item{model}{A list. Arguments passed into the policy model. See
-\code{\link{rl_dnn_config}} for details.}
+\link{rl_dnn_config} for details.}
 
 \item{sgd_minibatch_size}{A positive integer value. Total SGD batch size
 across all devices for SGD. Deprecated on the new API stack.}

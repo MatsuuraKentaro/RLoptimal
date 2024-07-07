@@ -2,7 +2,7 @@
 % Please edit documentation in R/rl_dnn_config.R
 \name{rl_dnn_config}
 \alias{rl_dnn_config}
-\title{DNN (deep neural network) configuration for reinforcement learning}
+\title{DNN Configuration for Reinforcement Learning}
 \usage{
 rl_dnn_config(
   fcnet_hiddens = c(256L, 256L),
@@ -25,5 +25,6 @@ https://github.com/ray-project/ray/blob/master/rllib/models/catalog.py}
 A list of DNN configuration parameters
 }
 \description{
+DNN (deep neural network) configuration for reinforcement learning.
 For detail, see Section 3.2.6 of the original paper.
 }
