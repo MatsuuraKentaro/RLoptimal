@@ -7,7 +7,7 @@ from gymnasium.spaces import Discrete, Box, Space
 
 from typing import List, Dict, Tuple, Any
 
-from subprocess import Popen, PIPE
+# from RProcess import RProcess
 
 class MCPModEnv(gym.Env):
     """Custom environment for the reinforcement leaning allocation"""
@@ -34,8 +34,8 @@ class MCPModEnv(gym.Env):
     true_dr_model: str
     true_response: np.ndarray
     
-    simulated_actions: np.ndarray
-    simulated_responses: np.ndarray
+    simulated_actions: List[int]
+    simulated_responses: List[float]
 
     def __init__(self, config: Dict[str, Any]) -> None:
         self.doses     = np.array(config["doses"])
@@ -98,7 +98,11 @@ class MCPModEnv(gym.Env):
         )
         return observation_space
 
-    def reset(self, seed=None, options=None) -> Tuple[np.ndarray, Dict[str, Any]]:
+    def reset(
+        self, seed: int | None = None, 
+        options: Dict[str, Any] | None = None
+    ) -> Tuple[np.ndarray, Dict[str, Any]]:
+
         super().reset(seed=seed)
 
         self.true_dr_model = self.np_random.choice(self.dr_models, p=self.dr_models_weights)
@@ -113,7 +117,7 @@ class MCPModEnv(gym.Env):
         
         return state, info
 
-    def _generate_new_responses(self, actions: np.ndarray) -> np.ndarray:
+    def _generate_new_responses(self, actions: List[int]) -> List[float]:
         """Simulate responses to the actions randomly.
         
         The responses are generated from a normal distribution with the
@@ -135,13 +139,13 @@ class MCPModEnv(gym.Env):
         Returns:
             The specific value of the state s.
         """
-        actions = self.simulated_actions
-        responses = self.simulated_responses
-        N_total = self.N_total
+        actions: List[int] = self.simulated_actions
+        responses: List[float] = self.simulated_responses
+        N_total: int = self.N_total
         return MCPModEnv.compute_state(actions, responses, N_total)
 
     @staticmethod
-    def compute_state(actions, responses, N_total) -> np.ndarray:
+    def compute_state(actions: List[int], responses: List[float], N_total: int) -> np.ndarray:
         """Calculate state s from simulated values.
         
         Here, the state s is described in Section 2.3 of the original paper.
@@ -149,6 +153,8 @@ class MCPModEnv(gym.Env):
         Returns:
             The specific value of the state s.
         """
+        # TODO: check arguments
+        
         df: DataFrame = DataFrame({"action": actions, "response": responses})
         df_grouped: DataFrameGroupBy = df.groupby("action")
 
@@ -163,44 +169,56 @@ class MCPModEnv(gym.Env):
         
         return state
 
-    def step(self, action, action_array=False):
+    def step(self, 
+        action: int, 
+        action_array: bool = False
+    ) -> Tuple[np.ndarray, float, bool, bool, Dict[str, Any]]:
         # TODO
         if action_array:
             raise ValueError("action_array is expected to be FALSE.")
         
-        new_actions   = [action] * self.N_block
-        new_responses = self._generate_new_responses(new_actions)
+        new_actions: List[int]     = [action] * self.N_block
+        new_responses: List[float] = self._generate_new_responses(new_actions)
 
         # Update simulation values
         self.simulated_actions   += new_actions
         self.simulated_responses += new_responses
         
-        simulation_size = len(self.simulated_actions)
+        simulation_size: int = len(self.simulated_actions)
 
+        reward: float
+        terminated: bool
+        info: Dict[str, Any]
         if simulation_size >= self.N_total:
             # For sending to R
-            true_dr_model_name = RProcess.to_R_notation(self.true_dr_model)
-            simulated_dose = self.doses[self.simulated_actions].tolist()
-            simulated_dose = RProcess.to_R_notation(simulated_dose)
-            simulated_response = RProcess.to_R_notation(self.simulated_responses)
+            true_dr_model_name: str = RProcess.to_R_notation(self.true_dr_model)
+            simulated_dose: str = RProcess.to_R_notation(
+                self.doses[self.simulated_actions].tolist())
+            simulated_response: str = RProcess.to_R_notation(self.simulated_responses)
             
             self.r_process.execute(f"""
                 scores <- compute_scores({true_dr_model_name}, 
                                          {simulated_dose},
                                          {simulated_response})
             """)
-            scores = self.r_process.get_value("scores", type = "str")
-            selmod = scores.pop(1)
-            med = scores.pop(1)  # keep str because it is possibly 'NA'
+            scores: List[float] | List[str] = self.r_process.get_value("scores", type = "str")
+            selmod: str = str(scores.pop(1))
+            med: str = str(scores.pop(1))  # keep str because it is possibly 'NA'
+            pval: float
+            score_power: float
+            score_MS : float
+            score_TD: float
+            score_MAE: float
             pval, score_power, score_MS, score_TD, score_MAE = [float(val) for val in scores]
             info = {"pval": pval, "selmod": selmod, "med": med, 
                     "score_power": score_power, "score_MS": score_MS, 
                     "score_TD": score_TD, "score_MAE": score_MAE}
-            optimization_metric = "score_" + self.optimization_metric
+            optimization_metric: str = "score_" + self.optimization_metric
+            # TODO
             if optimization_metric not in info: 
                 raise ValueError(f"Metric '{self.optimization_metric}' must be one of power, MS, TD, or MAE.")
 
-            reward = info[optimization_metric]
+            reward = float(info[optimization_metric])
             terminated = True            
         else:
             reward = 0
@@ -208,7 +226,7 @@ class MCPModEnv(gym.Env):
             info = {}
 
         state: np.ndarray = self._compute_state()
-        truncated = False
+        truncated: bool = False
         info.update(**{"dose": self.simulated_actions, "resp": self.simulated_responses})
         
         return state, reward, terminated, truncated, info
