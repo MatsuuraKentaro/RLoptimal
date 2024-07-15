@@ -202,9 +202,9 @@ class MCPModEnv(gym.Env):
                                          {simulated_response})
             """)
             scores: List[str] = [str(v) for v in self.r_process.get_value("scores", type = "str")]
-            selmod: str        = scores[0]
-            med: str           = scores[1]  # keep str because it is possibly 'NA'
-            pval: float        = float(scores[2])
+            pval: float        = float(scores[0])
+            selmod: str        = scores[1]
+            med: str           = scores[2]  # keep str because it is possibly 'NA'
             score_power: float = float(scores[3])
             score_MS : float   = float(scores[4])
             score_TD: float    = float(scores[5])
