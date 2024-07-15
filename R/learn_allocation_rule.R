@@ -75,12 +75,8 @@ learn_allocation_rule <- function(
   N_ini <- as.integer(N_ini)
   N_block <- as.integer(N_block)
   stopifnot(length(N_total) == 1L, N_total > 0)
-  stopifnot(length(N_ini) == 1L || length(N_ini) == K, N_ini > 0)
+  stopifnot(length(N_ini) == K, N_ini > 0)
   stopifnot(length(N_block) == 1L, N_block > 0)
-  if (length(N_ini) == 1L) {
-    stopifnot(N_ini %% K == 0.)
-    N_ini <- rep.int(as.integer(N_ini / K), times = K)
-  }
   stopifnot((N_total - sum(N_ini)) %% N_block == 0.)
 
   Delta <- as.double(Delta)
