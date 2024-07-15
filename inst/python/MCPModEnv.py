@@ -201,15 +201,14 @@ class MCPModEnv(gym.Env):
                                          {simulated_dose},
                                          {simulated_response})
             """)
-            scores: List[float] | List[str] = self.r_process.get_value("scores", type = "str")
-            selmod: str = str(scores.pop(1))
-            med: str = str(scores.pop(1))  # keep str because it is possibly 'NA'
-            pval: float
-            score_power: float
-            score_MS : float
-            score_TD: float
-            score_MAE: float
-            pval, score_power, score_MS, score_TD, score_MAE = [float(val) for val in scores]
+            scores: List[str] = [str(v) for v in self.r_process.get_value("scores", type = "str")]
+            selmod: str        = scores[0]
+            med: str           = scores[1]  # keep str because it is possibly 'NA'
+            pval: float        = float(scores[2])
+            score_power: float = float(scores[3])
+            score_MS : float   = float(scores[4])
+            score_TD: float    = float(scores[5])
+            score_MAE: float   = float(scores[6])
             info = {"pval": pval, "selmod": selmod, "med": med, 
                     "score_power": score_power, "score_MS": score_MS, 
                     "score_TD": score_TD, "score_MAE": score_MAE}
