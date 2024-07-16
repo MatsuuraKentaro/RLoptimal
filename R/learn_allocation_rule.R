@@ -156,9 +156,9 @@ learn_allocation_rule <- function(
 
   results <- list()
   episode_data <- data.frame()
-  elapsed_times <- c()
+  timer <- Timer$new()
   for (n in seq_len(N_update)) {
-    start_time <- Sys.time()
+    timer$start()
 
     result <- algo$train()
 
@@ -189,29 +189,11 @@ learn_allocation_rule <- function(
       message(glue("Checkpoint saved in directory '{checkpoint_path}'"))
     }
 
-    end_time <- Sys.time()
-    elapsed_time <- difftime(end_time, start_time, units = "secs")
-    time_unit <- attr(elapsed_time, "units")
+    timer$stop()
+    elapsed_time <- timer$elapsed()
+    estimated_remaining <- timer$estimate_remaining(N_update - n)
 
-    elapsed_times <- append(elapsed_times, elapsed_time)
-    if (length(elapsed_times) > 5) {
-      elapsed_times <- elapsed_times[-1L]
-    }
-    mean_elapsed_time <- mean(elapsed_times)
-    estimated_time <- mean_elapsed_time * (N_update - n)
-    if (estimated_time > 60 * 60) {
-      time_unit <- "hours"
-    } else if (estimated_time > 60) {
-      time_unit <- "mins"
-    }
-    units(estimated_time) <- time_unit
-    # estimated_finish_time <- format(Sys.time() + estimated_time, "%Y-%m-%d %H:%M")
-
-    # print(glue("Elapsed: {round(elapsed_time)} secs"))
-    # print(glue("Estimated Remain: {round(estimated_time)} {time_unit}"))
-    # print(glue("Estimated Finish: {estimated_finish_time}"))
-
-    print(glue("{formatC(n, digits)}: Min/Mean/Max reward: {rewards$min}/{rewards$mean}/{rewards$max} (time: {round(elapsed_time)} secs)"))
+    print(glue("{formatC(n, digits)}: Min/Mean/Max reward: {rewards$min}/{rewards$mean}/{rewards$max} ({round(elapsed_time)} secs, remaining: {estimated_remaining})"))
   }
 
   dir_path <- glue("{output_checkpoint_path}_{formatC(n, digits, flag = '0')}")

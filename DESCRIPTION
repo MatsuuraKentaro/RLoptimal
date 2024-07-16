@@ -17,6 +17,7 @@ Imports:
     reticulate,
     utils
 Collate:
+    'timer.R'
     'utils.R'
     'allocation_rule.R'
     'generate_setup_code.R'
