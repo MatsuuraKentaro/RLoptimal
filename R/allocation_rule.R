@@ -24,6 +24,8 @@ AllocationRule <- R6Class(
     info = NULL,
     input = NULL,
     log = NULL,
+    checkpoints = NULL,
+    checkpoints_paths = NULL,
 
     #' @description
     #' Create a new AllocationRule object.
@@ -59,7 +61,7 @@ AllocationRule <- R6Class(
       self$policy <- policy
       self$dir <- dir
       self$dirpath <- normalizePath(dir)
-      self$created_at <- Sys.time()
+      self$created_at <- format(Sys.time(), format = "%Y-%m-%d %H:%M:%S")
     },
 
     #' @description
@@ -114,16 +116,94 @@ AllocationRule <- R6Class(
       action_probs
     },
 
+    resume_learning = function(iter) {
+      checkpoint_path <- tail(self$checkpoints_paths, 1L)
+      algorithm <- reticulate::import("ray.rllib.algorithms.algorithm")
+      algo <- algorithm$Algorithm$from_checkpoint(checkpoint_path)
+
+      output_path <- self$dirpath
+      output_checkpoint_path <- sub("^(.*)_\\d+$", "\\1", checkpoint_path)
+      # TODO
+      save_start_iter <- 300L
+      save_every_iter <- 100L
+      N_update <- self$info$iterations + iter
+      digits <- floor(log10(N_update)) + 1
+
+      timer <- Timer$new()
+      checkpoints <- self$checkpoints_paths
+      episode_data <- self$info$log
+      for (n in seq(self$info$iterations + 1, N_update)) {
+        timer$start()
+
+        result <- algo$train()
+
+        if (ray_version() < "2.23.0") {
+          reward_path <- "result$episode_reward_{x}"
+          episode_len_mean <- result$episode_len_mean
+        } else {
+          reward_path <- "result$env_runners$episode_reward_{x}"
+          episode_len_mean <- result$env_runners$episode_len_mean
+        }
+        reward_func <- function(x) eval(parse(text = glue(reward_path)))
+        rewards <- Map(reward_func, c("min", "mean", "max"))
+        episode <- data.frame(n = n,
+                              episode_reward_min  = rewards$min,
+                              episode_reward_mean = rewards$mean,
+                              episode_reward_max  = rewards$max,
+                              episode_len_mean    = episode_len_mean)
+        episode_data <- rbind(episode_data, episode)
+
+        rewards <- Map(sprintf, rewards, fmt = "%8.4f")
+        # print(glue("{formatC(n, digits)}: Min/Mean/Max reward: {rewards$min}/{rewards$mean}/{rewards$max}"))
+
+        # Save checkpoint
+        if (n >= save_start_iter && (n - save_start_iter) %% save_every_iter == 0) {
+          dir_path <- glue("{output_checkpoint_path}_{formatC(n, digits, flag = '0')}")
+          save_result <- algo$save(dir_path)
+          checkpoint_path <- save_result$checkpoint$path
+          checkpoints <- c(checkpoints, checkpoint_path)
+          message(glue("Checkpoint saved in directory '{checkpoint_path}'"))
+        }
+
+        timer$stop()
+        elapsed_time <- timer$elapsed()
+        estimated_remaining <- timer$estimate_remaining(N_update - n)
+
+        print(glue("{formatC(n, digits)}: Min/Mean/Max reward: {rewards$min}/{rewards$mean}/{rewards$max} ({round(elapsed_time)} secs, remaining: {estimated_remaining})"))
+      }
+
+      dir_path <- glue("{output_checkpoint_path}_{formatC(n, digits, flag = '0')}")
+      if (!dir.exists(dir_path)) {
+        save_result <- algo$save(dir_path)
+        checkpoint_path <- save_result$checkpoint$path
+        checkpoints <- c(checkpoints, checkpoint_path)
+        message(glue("Checkpoint saved in directory '{checkpoint_path}'"))
+      }
+      algo$stop()
+
+      # Export allocation rule (policy)
+      policy <- algo$get_policy(policy_id = "default_policy")
+      policy$export_checkpoint(output_path)  # return NULL
+      message(glue("Allocation rule saved in directory '{output_path}'"))
+
+      self$info$iterations <- n
+      self$log <- episode_data
+      self$checkpoints_paths <- checkpoints
+      self$checkpoints <- as.integer(sub(".*_(\\d+)$", "\\1", checkpoints))
+    },
+
     #' @description
     #' Set information when learning the allocation rule.
     #'
     #' @param info Information when learning the allocation rule.
     #' @param input Inputs for learning the allocation rule.
     #' @param log The log of scores during the learning of the allocation rule.
-    set_info = function(info, input, log) {
+    set_info = function(info, input, log, checkpoints) {
       self$info <- info
       self$input <- input
       self$log <- log
+      self$checkpoints_paths <- checkpoints
+      self$checkpoints <- as.integer(sub(".*_(\\d+)$", "\\1", checkpoints))
     },
 
     #' @description
@@ -138,6 +218,8 @@ AllocationRule <- R6Class(
         print(glue("call:"))
         print(glue("{deparse(self$info$call)}"))
         print(glue("iterations: {self$info$iterations}"))
+        checkpoints <- paste0(self$checkpoints, collapse = ", ")
+        print(glue("checkpoints: {checkpoints}"))
       }
     }
   )

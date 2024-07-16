@@ -154,9 +154,9 @@ learn_allocation_rule <- function(
   config <- do.call(config$training, rl_config)
   algo <- config$build()
 
-  results <- list()
-  episode_data <- data.frame()
   timer <- Timer$new()
+  checkpoints <- c()
+  episode_data <- data.frame()
   for (n in seq_len(N_update)) {
     timer$start()
 
@@ -186,6 +186,7 @@ learn_allocation_rule <- function(
       dir_path <- glue("{output_checkpoint_path}_{formatC(n, digits, flag = '0')}")
       save_result <- algo$save(dir_path)
       checkpoint_path <- save_result$checkpoint$path
+      checkpoints <- c(checkpoints, checkpoint_path)
       message(glue("Checkpoint saved in directory '{checkpoint_path}'"))
     }
 
@@ -200,6 +201,7 @@ learn_allocation_rule <- function(
   if (!dir.exists(dir_path)) {
     save_result <- algo$save(dir_path)
     checkpoint_path <- save_result$checkpoint$path
+    checkpoints <- c(checkpoints, checkpoint_path)
     message(glue("Checkpoint saved in directory '{checkpoint_path}'"))
   }
   algo$stop()
@@ -213,7 +215,7 @@ learn_allocation_rule <- function(
   allocation_rule <- AllocationRule$new(dir = output_path)
   info <- list(call = match.call(), iterations = N_update)
   input <- Map(eval, as.list(info$call)[-1L])
-  allocation_rule$set_info(info, input, episode_data)
+  allocation_rule$set_info(info, input, episode_data, checkpoints)
 
   allocation_rule
 }
