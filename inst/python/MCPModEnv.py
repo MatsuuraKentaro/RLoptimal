@@ -158,10 +158,10 @@ class MCPModEnv(gym.Env):
         df: DataFrame = DataFrame({"action": actions, "response": responses})
         df_grouped: DataFrameGroupBy = df.groupby("action")
 
-        mean_response: np.ndarray = np.array(df_grouped.mean()["response"].values)
+        mean_response: np.ndarray = df_grouped.mean()["response"].values
         shifted_mean_response: np.ndarray = mean_response[1:] - mean_response[0]
-        std_dev_response: np.ndarray = np.array(df_grouped.std(ddof=0)["response"].values)
-        count_per_action: np.ndarray = np.array(df["action"].value_counts().values)
+        std_dev_response: np.ndarray = df_grouped.std(ddof=0)["response"].values
+        count_per_action: np.ndarray = df_grouped.size().values
         ratio_per_action: np.ndarray = count_per_action / N_total
         
         state: np.ndarray = np.concatenate(
