@@ -18,6 +18,7 @@ Imports:
     utils
 Collate:
     'timer.R'
+    'train_algo.R'
     'utils.R'
     'allocation_rule.R'
     'generate_setup_code.R'

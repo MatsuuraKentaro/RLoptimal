@@ -22,6 +22,10 @@ This class represents an allocation rule that generates a next allocation.
 \item{\code{input}}{Inputs for learning the allocation rule.}
 
 \item{\code{log}}{The log of scores during the learning of the allocation rule.}
+
+\item{\code{checkpoints}}{The integer vector of iteration counts for checkpoints.}
+
+\item{\code{checkpoints_paths}}{The paths to the directories where each checkpoint is stored.}
 }
 \if{html}{\out{</div>}}
 }
@@ -30,6 +34,7 @@ This class represents an allocation rule that generates a next allocation.
 \itemize{
 \item \href{#method-AllocationRule-new}{\code{AllocationRule$new()}}
 \item \href{#method-AllocationRule-get_next_action_probs}{\code{AllocationRule$get_next_action_probs()}}
+\item \href{#method-AllocationRule-resume_learning}{\code{AllocationRule$resume_learning()}}
 \item \href{#method-AllocationRule-set_info}{\code{AllocationRule$set_info()}}
 \item \href{#method-AllocationRule-print}{\code{AllocationRule$print()}}
 \item \href{#method-AllocationRule-clone}{\code{AllocationRule$clone()}}
@@ -84,12 +89,33 @@ A vector of the probabilities of the next action.
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-AllocationRule-resume_learning"></a>}}
+\if{latex}{\out{\hypertarget{method-AllocationRule-resume_learning}{}}}
+\subsection{Method \code{resume_learning()}}{
+Resume learning the allocation rule. This function updates the original
+AllocationRule object.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{AllocationRule$resume_learning(iter)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{iter}}{A number of additional iterations.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+An updated \link{AllocationRule} object.
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AllocationRule-set_info"></a>}}
 \if{latex}{\out{\hypertarget{method-AllocationRule-set_info}{}}}
 \subsection{Method \code{set_info()}}{
 Set information when learning the allocation rule.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AllocationRule$set_info(info, input, log)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AllocationRule$set_info(info, input, log, checkpoints)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
@@ -100,6 +126,8 @@ Set information when learning the allocation rule.
 \item{\code{input}}{Inputs for learning the allocation rule.}
 
 \item{\code{log}}{The log of scores during the learning of the allocation rule.}
+
+\item{\code{checkpoints}}{The paths to the directories where each checkpoint is stored.}
 }
 \if{html}{\out{</div>}}
 }
