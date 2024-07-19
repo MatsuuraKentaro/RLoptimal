@@ -10,6 +10,8 @@
 #' @field info Information when learning the allocation rule.
 #' @field input Inputs for learning the allocation rule.
 #' @field log The log of scores during the learning of the allocation rule.
+#' @field checkpoints The integer vector of iteration counts for checkpoints.
+#' @field checkpoints_paths The paths to the directories where each checkpoint is stored.
 #'
 #' @export
 AllocationRule <- R6Class(
@@ -24,6 +26,8 @@ AllocationRule <- R6Class(
     info = NULL,
     input = NULL,
     log = NULL,
+    checkpoints = NULL,
+    checkpoints_paths = NULL,
 
     #' @description
     #' Create a new AllocationRule object.
@@ -59,7 +63,7 @@ AllocationRule <- R6Class(
       self$policy <- policy
       self$dir <- dir
       self$dirpath <- normalizePath(dir)
-      self$created_at <- Sys.time()
+      self$created_at <- format(Sys.time(), format = "%Y-%m-%d %H:%M:%S")
     },
 
     #' @description
@@ -115,15 +119,51 @@ AllocationRule <- R6Class(
     },
 
     #' @description
+    #' Resume learning the allocation rule. This function updates the original
+    #' AllocationRule object.
+    #'
+    #' @param iter A number of additional iterations.
+    #'
+    #' @return An updated \link{AllocationRule} object.
+    resume_learning = function(iter) {
+      checkpoint_path <- tail(self$checkpoints_paths, 1L)
+      algorithm <- reticulate::import("ray.rllib.algorithms.algorithm")
+      algo <- algorithm$Algorithm$from_checkpoint(checkpoint_path)
+
+      output_path <- self$dirpath
+      output_checkpoint_path <- sub("^(.*)_\\d+$", "\\1", checkpoint_path)
+      save_start_iter <- self$input$save_start_iter
+      save_every_iter <- self$input$save_every_iter
+      N_update <- self$info$iterations + iter
+
+      n_start <- self$info$iterations + 1
+
+      result <- train_algo(algo, n_start, N_update,
+                           output_path, output_checkpoint_path,
+                           save_start_iter, save_every_iter)
+
+      checkpoints <- c(self$checkpoints_paths, result$checkpoints)
+      episode_data <- rbind(self$info$log, result$episode_data)
+
+      self$info$iterations <- N_update
+      self$log <- episode_data
+      private$set_checkpoints(checkpoints)
+
+      self
+    },
+
+    #' @description
     #' Set information when learning the allocation rule.
     #'
     #' @param info Information when learning the allocation rule.
     #' @param input Inputs for learning the allocation rule.
     #' @param log The log of scores during the learning of the allocation rule.
-    set_info = function(info, input, log) {
+    #' @param checkpoints The paths to the directories where each checkpoint is stored.
+    set_info = function(info, input, log, checkpoints) {
       self$info <- info
       self$input <- input
       self$log <- log
+      private$set_checkpoints(checkpoints)
     },
 
     #' @description
@@ -138,7 +178,16 @@ AllocationRule <- R6Class(
         print(glue("call:"))
         print(glue("{deparse(self$info$call)}"))
         print(glue("iterations: {self$info$iterations}"))
+        checkpoints <- paste0(self$checkpoints, collapse = ", ")
+        print(glue("checkpoints: {checkpoints}"))
       }
+    }
+  ),
+
+  private = list(
+    set_checkpoints = function(checkpoints_paths) {
+      self$checkpoints_paths = checkpoints_paths
+      self$checkpoints <- as.integer(sub(".*_(\\d+)$", "\\1", checkpoints_paths))
     }
   )
 )
