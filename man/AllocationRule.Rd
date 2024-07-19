@@ -22,6 +22,10 @@ This class represents an allocation rule that generates a next allocation.
 \item{\code{input}}{Inputs for learning the allocation rule.}
 
 \item{\code{log}}{The log of scores during the learning of the allocation rule.}
+
+\item{\code{checkpoints}}{The integer vector of iteration counts for checkpoints.}
+
+\item{\code{checkpoints_paths}}{The paths to the directories where each checkpoint is stored.}
 }
 \if{html}{\out{</div>}}
 }
@@ -88,10 +92,22 @@ A vector of the probabilities of the next action.
 \if{html}{\out{<a id="method-AllocationRule-resume_learning"></a>}}
 \if{latex}{\out{\hypertarget{method-AllocationRule-resume_learning}{}}}
 \subsection{Method \code{resume_learning()}}{
+Resume learning the allocation rule. This function updates the original
+AllocationRule object.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{AllocationRule$resume_learning(iter)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{iter}}{A number of additional iterations.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+An updated \link{AllocationRule} object.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-AllocationRule-set_info"></a>}}
@@ -110,6 +126,8 @@ Set information when learning the allocation rule.
 \item{\code{input}}{Inputs for learning the allocation rule.}
 
 \item{\code{log}}{The log of scores during the learning of the allocation rule.}
+
+\item{\code{checkpoints}}{The paths to the directories where each checkpoint is stored.}
 }
 \if{html}{\out{</div>}}
 }
