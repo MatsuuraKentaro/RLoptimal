@@ -162,6 +162,8 @@ learn_allocation_rule <- function(
   allocation_rule <- AllocationRule$new(dir = output_path)
   info <- list(call = match.call(), iterations = N_update)
   input <- Map(eval, as.list(info$call)[-1L])
+  input$save_start_iter <- save_start_iter
+  input$save_every_iter <- save_every_iter
   allocation_rule$set_info(info, input, result$episode_data, result$checkpoints)
 
   allocation_rule
