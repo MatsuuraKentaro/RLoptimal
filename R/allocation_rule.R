@@ -51,8 +51,8 @@ AllocationRule <- R6Class(
         df <- df[df$mtime == max(df$mtime), , drop = FALSE]
         stopifnot("Cannot identify the latest allocation rule" = nrow(df) == 1L)
         dir <- rownames(df)
-      } else if (!grepl("/", dir)) {
-        # If 'dir' does not contain '/', it is a directory name.
+      } else if (!grepl("/|\\\\", dir)) {
+        # If 'dir' does not contain '/' or '\\', it is a directory name.
         dir <- file.path(base_dir, dir)
       }
 
@@ -117,7 +117,7 @@ AllocationRule <- R6Class(
       dose_list <- env_config$doses
       names(action_list) <- as.character(dose_list)
       excluded_doses <- setdiff(unique(doses), dose_list)
-      if (length(excluded_doses) > 0) {
+      if (length(excluded_doses) > 0L) {
         excluded_doses <- paste(excluded_doses, collapse = ", ")
         stop(glue("{excluded_doses} is not included in doses on the learning."))
       }
@@ -127,7 +127,7 @@ AllocationRule <- R6Class(
       reticulate::source_python(system.file("python/RProcess.py", package = "RLoptimal"))
       reticulate::source_python(system.file("python/MCPModEnv.py", package = "RLoptimal"))
       state <- MCPModEnv$compute_state(actions, responses, N_total)
-      info <- policy$compute_single_action(state, full_fetch = TRUE)[[3]]
+      info <- policy$compute_single_action(state, full_fetch = TRUE)[[3L]]
       action_probs <- info$action_dist_inputs  # array
       action_probs <- as.vector(action_probs)  # cast to numeric vector
       action_probs <- softmax(action_probs)
@@ -152,7 +152,7 @@ AllocationRule <- R6Class(
       save_every_iter <- self$input$save_every_iter
       N_update <- self$info$iterations + iter
 
-      n_start <- self$info$iterations + 1
+      n_start <- self$info$iterations + 1L
 
       result <- train_algo(algo, n_start, N_update,
                            output_path, output_checkpoint_path,
