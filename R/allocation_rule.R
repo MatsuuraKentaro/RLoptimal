@@ -84,11 +84,13 @@ AllocationRule <- R6Class(
     #'
     #' @importFrom glue glue
     get_next_action_probs = function(doses, resps) {
-      if (!dir.exists(self$dir)) {
-        compressed_policy_file <- tempfile(fileext = ".zip")
-        writeBin(private$policy_raw, compressed_policy_file)
-        unzip(compressed_policy_file)
-        message(glue("Created allocation rule directory '{self$dir}'"))
+      if (is.null(self$policy$config)) {
+        if (!dir.exists(self$dir)) {
+          compressed_policy_file <- tempfile(fileext = ".zip")
+          writeBin(private$policy_raw, compressed_policy_file)
+          unzip(compressed_policy_file)
+          message(glue("Created allocation rule directory '{self$dir}'"))
+        }
         policy_lib <- reticulate::import("ray.rllib.policy.policy")
         self$policy <- policy_lib$Policy$from_checkpoint(self$dir)
       }
