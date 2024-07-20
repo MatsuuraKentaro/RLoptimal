@@ -60,10 +60,11 @@ AllocationRule <- R6Class(
       policy_lib <- reticulate::import("ray.rllib.policy.policy")
       policy <- policy_lib$Policy$from_checkpoint(dir)
 
+      # Compress the policy directory and keep it in binary format in this object
       compressed_policy_file <- tempfile(fileext = ".zip")
       zip(zipfile = compressed_policy_file, files = list.files(dir, full.names = TRUE))
-      private$policy_raw <- readBin(compressed_policy_file, what = "raw",
-                                    n = file.info(compressed_policy_file)$size)
+      private$policy_binary <- readBin(compressed_policy_file, what = "raw",
+                                       n = file.info(compressed_policy_file)$size)
 
       self$policy <- policy
       self$dir <- dir
@@ -84,12 +85,14 @@ AllocationRule <- R6Class(
     #'
     #' @importFrom glue glue
     get_next_action_probs = function(doses, resps) {
+      # If policy has been reset, reload it from the directory where it is stored
       if (is.null(self$policy$config)) {
+        # If the directory where policy is stored cannot be found, restore it from the binary data
         if (!dir.exists(self$dir)) {
           compressed_policy_file <- tempfile(fileext = ".zip")
-          writeBin(private$policy_raw, compressed_policy_file)
+          writeBin(private$policy_binary, compressed_policy_file)
           unzip(compressed_policy_file)
-          message(glue("Created allocation rule directory '{self$dir}'"))
+          message(glue("Created allocation rule directory '{self$dir}'."))
         }
         policy_lib <- reticulate::import("ray.rllib.policy.policy")
         self$policy <- policy_lib$Policy$from_checkpoint(self$dir)
@@ -201,7 +204,7 @@ AllocationRule <- R6Class(
   ),
 
   private = list(
-    policy_raw = NULL,
+    policy_binary = NULL,
 
     set_checkpoints = function(checkpoints_paths) {
       self$checkpoints_paths = checkpoints_paths
