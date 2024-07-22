@@ -43,9 +43,6 @@ AllocationRule <- R6Class(
       stopifnot(length(dir) == 1L)
       stopifnot(length(base_dir) == 1L)
 
-      # Remove the trailing directory separator
-      dir <- gsub("/$|\\$", "", dir)
-
       # Identify the specified directory path
       if (dir == "latest") {
         # Search the latest directory in 'base_dir'
