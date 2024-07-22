@@ -56,6 +56,11 @@ AllocationRule <- R6Class(
         dir <- file.path(base_dir, dir)
       }
 
+      # If dir is a checkpoint directory, change it to its policy directory
+      if ("policies" %in% list.dirs(dir, full.names = FALSE, recursive = FALSE)) {
+        dir <- file.path(dir, "policies", "default_policy")
+      }
+
       # Restore policy object
       policy_lib <- reticulate::import("ray.rllib.policy.policy")
       policy <- policy_lib$Policy$from_checkpoint(dir)
