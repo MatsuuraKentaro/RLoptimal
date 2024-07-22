@@ -127,9 +127,12 @@ AllocationRule <- R6Class(
       actions <- action_list[as.character(doses)]
 
       # Obtain the probabilities of next actions
-      reticulate::source_python(system.file("python/RProcess.py", package = "RLoptimal"))
-      reticulate::source_python(system.file("python/MCPModEnv.py", package = "RLoptimal"))
-      state <- MCPModEnv$compute_state(actions, responses, N_total)
+      d <- data.frame(action = actions, resp = responses)
+      mean_resps <- tapply(d$resp, d$action, mean)
+      shifted_mean_resps <- mean_resps[-1] - mean_resps[1]
+      sd_resps <- tapply(d$resp, d$action, function(x) sd(x)*sqrt((length(x) - 1)/length(x)))
+      ratio_per_action <- tapply(d$resp, d$action, length) / N_total
+      state <- as.array(unname(c(shifted_mean_resps, sd_resps, ratio_per_action)))
       info <- policy$compute_single_action(state, full_fetch = TRUE)[[3L]]
       action_probs <- info$action_dist_inputs  # array
       action_probs <- as.vector(action_probs)  # cast to numeric vector
