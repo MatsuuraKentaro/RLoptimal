@@ -139,30 +139,15 @@ class MCPModEnv(gym.Env):
         Returns:
             The specific value of the state s.
         """
-        actions: List[int] = self.simulated_actions
-        responses: List[float] = self.simulated_responses
-        N_total: int = self.N_total
-        return MCPModEnv.compute_state(actions, responses, N_total)
-
-    @staticmethod
-    def compute_state(actions: List[int], responses: List[float], N_total: int) -> np.ndarray:
-        """Calculate state s from simulated values.
-        
-        Here, the state s is described in Section 2.3 of the original paper.
-        
-        Returns:
-            The specific value of the state s.
-        """
-        # TODO: check arguments
-        
-        df: DataFrame = DataFrame({"action": actions, "response": responses})
+        df: DataFrame = DataFrame({"action": self.simulated_actions, 
+                                   "response": self.simulated_responses})
         df_grouped: DataFrameGroupBy = df.groupby("action")
 
         mean_response: np.ndarray = df_grouped.mean()["response"].values
         shifted_mean_response: np.ndarray = mean_response[1:] - mean_response[0]
         std_dev_response: np.ndarray = df_grouped.std(ddof=0)["response"].values
         count_per_action: np.ndarray = df_grouped.size().values
-        ratio_per_action: np.ndarray = count_per_action / N_total
+        ratio_per_action: np.ndarray = count_per_action / self.N_total
         
         state: np.ndarray = np.concatenate(
             (shifted_mean_response, std_dev_response, ratio_per_action))
