@@ -160,10 +160,11 @@ learn_allocation_rule <- function(
 
   # Create AllocationRule object
   allocation_rule <- AllocationRule$new(dir = output_path)
-  info <- list(call = match.call(), iterations = N_update)
+  info <- list(call = match.call(), iterations = N_update, setup_code = setup_code)
+  default_arguments <- formals()
   input <- Map(eval, as.list(info$call)[-1L])
-  input$save_start_iter <- save_start_iter
-  input$save_every_iter <- save_every_iter
+  default_arguments[names(input)] <- input
+  input <- default_arguments
   allocation_rule$set_info(info, input, result$episode_data, result$checkpoints)
 
   allocation_rule
