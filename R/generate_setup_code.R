@@ -46,22 +46,24 @@ generate_setup_code <- function(
       lower < estimated_target_dose && estimated_target_dose < upper
     }
 
-    compute_score_MAE <- function(estimated_response, true_response) {
+    compute_MAE <- function(estimated_response, true_response) {
       shifted_estimates <- estimated_response - estimated_response[1L]
       shifted_true <- true_response - true_response[1L]
       errors <- shifted_estimates[-1L] - shifted_true[-1L]
-      MAE <- mean(abs(errors))
+      mean(abs(errors))
+    }
 
-      # This has been modified from the formula as described in the original paper.
+    # This has been modified from the formula as described in the original paper.
+    compute_score_MAE <- function(MAE) {
       scaling_factor <- 2 * abs(max_effect - placebo_effect)
       score_MAE <- 1 - MAE / scaling_factor
       score_MAE <- max(score_MAE, 0)  # Clip at 0
       score_MAE
     }
 
-    # For use in MCPModEnv.py
-    compute_scores <- function(
-        true_dr_model_name, simulated_dose, simulated_response) {
+    compute_metric_base <- function(true_dr_model_name, true_response = NULL,
+                                    simulated_dose, simulated_response) {
+
       # Execute MCP-Mod (multiple comparison procedure - modeling)
       result_mcpmod <- DoseFinding::MCPMod(
         dose = simulated_dose, resp = simulated_response, models = dr_models,
@@ -74,7 +76,8 @@ generate_setup_code <- function(
 
       # No model is selected
       if (is.null(result_mcpmod$selMod)) {
-        return(c(min_p_value, NA, NA, 0, 0, 0, 0))
+        return(list(min_p_value = min_p_value, selected_dr_model_name = NA,
+                    estimated_target_dose = NA, MAE = NA))
       }
 
       # Selected model for MS and MAE
@@ -83,6 +86,33 @@ generate_setup_code <- function(
 
       # Estimated target dose for TD (continuous value or NA, not necessarily one of the doses)
       estimated_target_dose <- result_mcpmod$doseEst[[selected_dr_model_name]]
+
+      estimated_response <- predict(selected_dr_model, predType = "ls-means", doseSeq = doses)
+      if (is.null(true_response)) {
+        true_response <- true_response_list[[true_dr_model_name]]
+      }
+      MAE <- compute_MAE(estimated_response, true_response)
+
+      list(min_p_value = min_p_value, selected_dr_model_name = selected_dr_model_name,
+           estimated_target_dose = estimated_target_dose, MAE = MAE)
+    }
+
+    # For use in MCPModEnv.py
+    compute_scores <- function(
+        true_dr_model_name, simulated_dose, simulated_response) {
+
+      metric_base <- compute_metric_base(
+          true_dr_model_name, NULL, simulated_dose, simulated_response)
+
+      min_p_value <- metric_base$min_p_value
+      selected_dr_model_name <- metric_base$selected_dr_model_name
+      estimated_target_dose <- metric_base$estimated_target_dose
+      MAE <- metric_base$MAE
+
+      # No model is selected
+      if (is.na(selected_dr_model_name)) {
+        return(c(min_p_value, NA, NA, 0, 0, 0, 0))
+      }
 
       # Power (detecting dose-response)
       is_detected_some_model <- min_p_value < alpha
@@ -96,9 +126,7 @@ generate_setup_code <- function(
       score_TD <- ifelse(in_range, 1, 0)
 
       # MAE (mean absolute error)
-      estimated_response <- predict(selected_dr_model, predType = "ls-means", doseSeq = doses)
-      true_response <- true_response_list[[true_dr_model_name]]
-      score_MAE <- compute_score_MAE(estimated_response, true_response)
+      score_MAE <- compute_score_MAE(MAE)
 
       c(min_p_value, selected_dr_model_name, estimated_target_dose,
         score_power, score_MS, score_TD, score_MAE)
