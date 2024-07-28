@@ -6,7 +6,7 @@
 \usage{
 rl_dnn_config(
   fcnet_hiddens = c(256L, 256L),
-  fcnet_activation = c("tanh", "relu", "swish", "silu", "linear"),
+  fcnet_activation = c("relu", "tanh", "swish", "silu", "linear"),
   ...
 )
 }
