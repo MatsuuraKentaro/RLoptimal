@@ -9,7 +9,7 @@ Description: Optimal adaptive allocation using deep reinforcement learning.
 License: file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Imports: 
     DoseFinding,
     glue,
@@ -28,3 +28,5 @@ Collate:
     'setup_python.R'
     'zzz.R'
     'cleanup_python_settings.R'
+    'simulate_one_study.R'
+    'adjust_significance_level.R'
