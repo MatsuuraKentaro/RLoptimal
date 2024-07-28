@@ -155,12 +155,8 @@ class MCPModEnv(gym.Env):
         return state
 
     def step(self, 
-        action: int, 
-        action_array: bool = False
+        action: int
     ) -> Tuple[np.ndarray, float, bool, bool, Dict[str, Any]]:
-        # TODO
-        if action_array:
-            raise ValueError("action_array is expected to be FALSE.")
         
         new_actions: List[int]     = [action] * self.N_block
         new_responses: List[float] = self._generate_new_responses(new_actions)
@@ -211,6 +207,6 @@ class MCPModEnv(gym.Env):
 
         state: np.ndarray = self._compute_state()
         truncated: bool = False
-        info.update(**{"dose": self.simulated_actions, "resp": self.simulated_responses})
+        info = {}
         
         return state, reward, terminated, truncated, info
