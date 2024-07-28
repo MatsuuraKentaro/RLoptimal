@@ -3,11 +3,10 @@
 #' @param models An object of class \link[DoseFinding]{Mods} specifying assumed
 #'        dose-response models.
 #' @param N_total A positive integer value. The total number of subjects.
-#' @param N_ini A positive integer value or vector. The number of subjects
-#'        initially allocated equally among dose groups or the number of subjects
-#'        initially assigned to each dose.
+#' @param N_ini A positive integer vector in which each element >= 2. 
+#'        The number of subjects initially assigned to each dose. 
 #' @param N_block A positive integer value. The number of subjects allocated
-#'        adaptively in each round. This may differ from the actual clinical trials.
+#'        adaptively in each round.
 #' @param Delta A positive numeric value. The clinically relevant target effect.
 #'        See \link[DoseFinding]{TD} for details.
 #' @param sd_normal A positive numeric value. The standard deviation of the
