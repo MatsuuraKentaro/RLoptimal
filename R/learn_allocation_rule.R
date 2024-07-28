@@ -75,7 +75,7 @@ learn_allocation_rule <- function(
   N_ini <- as.integer(N_ini)
   N_block <- as.integer(N_block)
   stopifnot(length(N_total) == 1L, N_total > 0)
-  stopifnot(length(N_ini) == K, N_ini > 0)
+  stopifnot(length(N_ini) == K, N_ini > 1)
   stopifnot(length(N_block) == 1L, N_block > 0)
   stopifnot((N_total - sum(N_ini)) %% N_block == 0.)
 
