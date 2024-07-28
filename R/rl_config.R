@@ -25,7 +25,7 @@
 #' @return A list of reinforcement learning configuration parameters
 #'
 #' @export
-rl_config <- function(iter = 500L, cores = 2L,
+rl_config <- function(iter = 1000L, cores = 4L,
                       # Common settings
                       gamma = 1.0, lr = 5e-5,
                       train_batch_size = 10000L, model = rl_dnn_config(),
