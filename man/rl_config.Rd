@@ -5,8 +5,8 @@
 \title{Configuration of Reinforcement Learning}
 \usage{
 rl_config(
-  iter = 500L,
-  cores = 2L,
+  iter = 1000L,
+  cores = 4L,
   gamma = 1,
   lr = 5e-05,
   train_batch_size = 10000L,

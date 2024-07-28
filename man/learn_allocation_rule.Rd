@@ -32,12 +32,11 @@ dose-response models.}
 
 \item{N_total}{A positive integer value. The total number of subjects.}
 
-\item{N_ini}{A positive integer value or vector. The number of subjects
-initially allocated equally among dose groups or the number of subjects
-initially assigned to each dose.}
+\item{N_ini}{A positive integer vector in which each element is greater than
+or equal to 2. The number of subjects initially assigned to each dose.}
 
 \item{N_block}{A positive integer value. The number of subjects allocated
-adaptively in each round. This may differ from the actual clinical trials.}
+adaptively in each round.}
 
 \item{Delta}{A positive numeric value. The clinically relevant target effect.
 See \link[DoseFinding]{TD} for details.}
