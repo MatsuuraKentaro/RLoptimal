@@ -16,7 +16,7 @@
 #' @export
 rl_dnn_config <- function(
     fcnet_hiddens = c(256L, 256L),
-    fcnet_activation = c("tanh", "relu", "swish", "silu", "linear"), ...) {
+    fcnet_activation = c("relu", "tanh", "swish", "silu", "linear"), ...) {
 
   fcnet_hiddens <- as.integer(fcnet_hiddens)
   fcnet_activation <- tolower(fcnet_activation)
