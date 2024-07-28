@@ -71,12 +71,29 @@ simulate_one_study <- function(
     return(list(min_p_value = min_p_value))
   }
   
-  compute_metric_base <- local({
-    eval(allocation_rule$info$setup_code)
-    compute_metric_base
-  })
+  # Execute MCP-Mod
+  result_mcpmod <- DoseFinding::MCPMod(
+    dose = sim_doses, resp = sim_resps, models = models,
+    selModel = selModel, alpha = alpha, Delta = Delta,
+    pVal = TRUE, alternative = "one.sided")
   
-  # To Do: pass models, Delta, alpha, and selModel
-  metrics <- compute_metric_base(true_model_name, true_response, sim_doses, sim_resps)
-  metrics  
+  p_values <- attr(result_mcpmod$MCTtest$tStat, "pVal")
+  min_p_value <- min(p_values)
+  
+  # No model is selected
+  if (is.null(result_mcpmod$selMod)) {
+    return(list(min_p_value = min_p_value, selected_model_name = NA,
+                estimated_target_dose = NA, MAE = NA))
+  }
+  
+  selected_model_name <- result_mcpmod$selMod
+  selected_model <- result_mcpmod$mods[[selected_model_name]]
+  
+  estimated_target_dose <- result_mcpmod$doseEst[[selected_model_name]]
+  
+  estimated_response <- predict(selected_model, predType = "ls-means", doseSeq = doses)
+  MAE <- compute_MAE(estimated_response, true_response)
+  
+  list(min_p_value = min_p_value, selected_model_name = selected_model_name,
+       estimated_target_dose = estimated_target_dose, MAE = MAE)
 }
