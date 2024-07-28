@@ -3,8 +3,8 @@
 #' @param models An object of class \link[DoseFinding]{Mods} specifying assumed
 #'        dose-response models.
 #' @param N_total A positive integer value. The total number of subjects.
-#' @param N_ini A positive integer vector in which each element >= 2. 
-#'        The number of subjects initially assigned to each dose. 
+#' @param N_ini A positive integer vector in which each element is greater than 
+#'        or equal to 2. The number of subjects initially assigned to each dose. 
 #' @param N_block A positive integer value. The number of subjects allocated
 #'        adaptively in each round.
 #' @param Delta A positive numeric value. The clinically relevant target effect.
@@ -73,9 +73,9 @@ learn_allocation_rule <- function(
   N_total <- as.integer(N_total)
   N_ini <- as.integer(N_ini)
   N_block <- as.integer(N_block)
-  stopifnot(length(N_total) == 1L, N_total > 0)
-  stopifnot(length(N_ini) == K, N_ini > 1)
-  stopifnot(length(N_block) == 1L, N_block > 0)
+  stopifnot(length(N_total) == 1L, N_total >= 1L)
+  stopifnot(length(N_ini) == K, N_ini >= 2L)
+  stopifnot(length(N_block) == 1L, N_block >= 1L)
   stopifnot((N_total - sum(N_ini)) %% N_block == 0.)
 
   Delta <- as.double(Delta)
