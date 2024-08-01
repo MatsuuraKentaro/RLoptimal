@@ -11,6 +11,13 @@ softmax <- function(x) {
   return(exp_x / sum(exp_x))
 }
 
+compute_MAE <- function(estimated_response, true_response) {
+  shifted_estimates <- estimated_response - estimated_response[1L]
+  shifted_true <- true_response - true_response[1L]
+  errors <- shifted_estimates[-1L] - shifted_true[-1L]
+  return(mean(abs(errors)))
+}
+
 .ray_version <- NULL
 
 ray_version <- function() {
