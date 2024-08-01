@@ -28,7 +28,7 @@ adjust_significance_level <- function(
     # type = c("normal", "general"),
     alpha = 0.025, n_sim = 10000L, seed = NULL) {
   
-  if (!is.null(seed)) {
+  if (is.null(seed)) {
     seed <- 0
   }
   
