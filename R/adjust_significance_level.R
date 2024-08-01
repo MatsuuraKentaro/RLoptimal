@@ -44,5 +44,6 @@ adjust_significance_level <- function(
     res$min_p_value
   })
   adjusted <- unname(quantile(p_values, prob = alpha))
+  adjusted <- min(adjusted, alpha)
   adjusted
 }
