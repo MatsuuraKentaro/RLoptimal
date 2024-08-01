@@ -39,9 +39,7 @@ simulate_one_study <- function(
     alpha = 0.025, selModel = c("AIC", "maxT", "aveAIC"), 
     seed = NULL, eval_type = c("all", "pVal")) {
   
-  if (!is.null(seed)) {
-    set.seed(seed)
-  }
+  set.seed(seed)
   
   doses <- attr(models, "doses")
   K <- length(doses)
