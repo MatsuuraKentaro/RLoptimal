@@ -6,7 +6,7 @@
 #' @param fcnet_hiddens A positive integer vector. Numbers of units of the
 #'        intermediate layers.
 #' @param fcnet_activation A character value specifying the activation function.
-#'        Possible values are "tanh" (default), "ReLU", "Swish" (or "SiLU"), or
+#'        Possible values are "ReLU" (default), "tanh", "Swish" (or "SiLU"), or
 #'        "linear".
 #' @param ... Other configurations. See source code of RLlib.
 #'        https://github.com/ray-project/ray/blob/master/rllib/models/catalog.py

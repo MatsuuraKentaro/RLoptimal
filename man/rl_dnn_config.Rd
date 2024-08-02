@@ -15,7 +15,7 @@ rl_dnn_config(
 intermediate layers.}
 
 \item{fcnet_activation}{A character value specifying the activation function.
-Possible values are "tanh" (default), "ReLU", "Swish" (or "SiLU"), or
+Possible values are "ReLU" (default), "tanh", "Swish" (or "SiLU"), or
 "linear".}
 
 \item{...}{Other configurations. See source code of RLlib.
