@@ -6,6 +6,8 @@
 \usage{
 rl_config(
   iter = 1000L,
+  save_start_iter = NULL,
+  save_every_iter = NULL,
   cores = 4L,
   gamma = 1,
   lr = 5e-05,
@@ -18,6 +20,9 @@ rl_config(
 }
 \arguments{
 \item{iter}{A positive integer value. Number of iterations.}
+
+\item{save_start_iter, save_every_iter}{An integer value. Save checkpoints every
+'save_every_iter' iterations starting from 'save_start_iter' or later.}
 
 \item{cores}{A positive integer value. Number of CPU cores used for learning.}
 
