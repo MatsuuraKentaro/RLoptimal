@@ -4,6 +4,8 @@
 #' Not compatible with the new API stack introduced in Ray 2.10.0.
 #'
 #' @param iter A positive integer value. Number of iterations.
+#' @param save_start_iter,save_every_iter An integer value. Save checkpoints every
+#'        'save_every_iter' iterations starting from 'save_start_iter' or later.
 #' @param cores A positive integer value. Number of CPU cores used for learning.
 #' @param gamma A positive numeric value. Discount factor of the Markov decision
 #'        process. Default is 1.0 (not discount).
@@ -25,7 +27,10 @@
 #' @return A list of reinforcement learning configuration parameters
 #'
 #' @export
-rl_config <- function(iter = 1000L, cores = 4L,
+rl_config <- function(iter = 1000L, 
+                      save_start_iter = NULL,
+                      save_every_iter = NULL,
+                      cores = 4L,
                       # Common settings
                       gamma = 1.0, lr = 5e-5,
                       train_batch_size = 10000L, model = rl_dnn_config(),
@@ -33,6 +38,10 @@ rl_config <- function(iter = 1000L, cores = 4L,
                       sgd_minibatch_size = 200L, num_sgd_iter = 20L,
                       ...) {
   iter <- as.integer(iter)
+  save_start_iter <- ifelse(is.null(save_start_iter), 
+                            ceiling(iter / 2), as.integer(save_start_iter))
+  save_every_iter <- ifelse(is.null(save_every_iter), 
+                            ceiling(iter / 2 / 5), as.integer(save_every_iter))
   cores <- as.integer(cores)
   gamma <- as.double(gamma)
   lr <- as.double(lr)
@@ -48,7 +57,8 @@ rl_config <- function(iter = 1000L, cores = 4L,
   stopifnot(length(num_sgd_iter) == 1L, num_sgd_iter > 0)
 
   df_config <- data.frame(
-    iter, cores, gamma, train_batch_size, sgd_minibatch_size, num_sgd_iter,
+    iter, save_start_iter, save_every_iter, cores, 
+    gamma, train_batch_size, sgd_minibatch_size, num_sgd_iter,
     check.names = FALSE, stringsAsFactors = FALSE
   )
   if (nrow(df_config) != 1L) {

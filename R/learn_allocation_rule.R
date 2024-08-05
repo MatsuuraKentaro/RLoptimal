@@ -40,8 +40,6 @@
 #' @param checkpoint_dir A character value. Parent directory path to save
 #'        checkpoints. It enables you to resume learning from that point onwards.
 #'        Default is "checkpoints".
-#' @param save_start_iter,save_every_iter An integer value. Save checkpoints every
-#'        'save_every_iter' iterations starting from 'save_start_iter' or later.
 #'
 #' @returns An \link{AllocationRule} object.
 #'
@@ -56,8 +54,7 @@ learn_allocation_rule <- function(
     rl_config = rl_config(), alpha = 0.025,
     selModel  = c("AIC", "maxT", "aveAIC"), Delta_range = c(0.9, 1.1) * Delta,
     output_dir = format(Sys.time(), "%Y%m%d_%H%M%S"),
-    output_base_dir = "allocation_rules", checkpoint_dir = "checkpoints",
-    save_start_iter = 300L, save_every_iter = 100L) {
+    output_base_dir = "allocation_rules", checkpoint_dir = "checkpoints") {
 
   # -------------------------------------------------------------------------
   # Check arguments ---------------------------------------------------------
@@ -141,9 +138,11 @@ learn_allocation_rule <- function(
   ppo <- reticulate::import("ray.rllib.algorithms.ppo")
 
   N_update <- rl_config$iter
+  save_start_iter <- rl_config$save_start_iter
+  save_every_iter <- rl_config$save_every_iter
   digits <- floor(log10(N_update)) + 1
   num_env_runners <- rl_config$cores
-  rl_config[c("iter", "cores")] <- NULL
+  rl_config[c("iter", "save_start_iter", "save_every_iter", "cores")] <- NULL
 
   config <- ppo$PPOConfig()$
     environment(env = MCPModEnv, env_config = env_config)$
