@@ -21,9 +21,7 @@ learn_allocation_rule(
   Delta_range = c(0.9, 1.1) * Delta,
   output_dir = format(Sys.time(), "\%Y\%m\%d_\%H\%M\%S"),
   output_base_dir = "allocation_rules",
-  checkpoint_dir = "checkpoints",
-  save_start_iter = 300L,
-  save_every_iter = 100L
+  checkpoint_dir = "checkpoints"
 )
 }
 \arguments{
@@ -83,9 +81,6 @@ not contain '/'. Default is "allocation_rules".}
 \item{checkpoint_dir}{A character value. Parent directory path to save
 checkpoints. It enables you to resume learning from that point onwards.
 Default is "checkpoints".}
-
-\item{save_start_iter, save_every_iter}{An integer value. Save checkpoints every
-'save_every_iter' iterations starting from 'save_start_iter' or later.}
 }
 \value{
 An \link{AllocationRule} object.
