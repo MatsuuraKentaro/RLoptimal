@@ -40,8 +40,9 @@ generate_setup_code <- function(
       lower <- unname(lower[true_dr_model_name])
       upper <- DoseFinding::TD(dr_models_for_RL, Delta = Delta_upper)
       upper <- unname(upper[true_dr_model_name])
-      # Clip at max_dose. If NA, return max_dose.
-      upper <- min(upper, max_dose, na.rm = TRUE)
+      # TD returns NA for large Delta, so if NA, return Inf.
+      lower <- ifelse(is.na(lower), Inf, lower)
+      upper <- ifelse(is.na(upper), Inf, upper)
 
       lower < estimated_target_dose && estimated_target_dose < upper
     }
