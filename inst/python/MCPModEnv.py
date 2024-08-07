@@ -187,7 +187,7 @@ class MCPModEnv(gym.Env):
             reward = self.r_process.get_value("reward")[0]
             terminated = True            
         else:
-            reward = 0.0
+            reward = 0
             terminated = False
 
         state: np.ndarray = self._compute_state()
