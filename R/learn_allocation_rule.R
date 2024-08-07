@@ -12,8 +12,10 @@
 #' @param sd_normal A positive numeric value. The standard deviation of the
 #'        observation noise.
 #' @param optimization_metric A character value specifying the metric to
-#'        optimize. Possible values are "MAE" (default), "TD", "power", or "MS".
-#'        See Section 2.2 of the original paper for details.
+#'        optimize. Possible values are "MAE" (default), "TD", "power", "MS", or
+#'        "power and MAE". See Section 2.2 of the original paper for details.
+#'        "power and MAE" shows performance between "power" and "MAE" 
+#'        by setting the reward based on MAE to 0 when not significant.
 #' @param rl_models An object of class \link[DoseFinding]{Mods}. True dose-response
 #'        models in simulations for reinforcement learning. The default is the
 #'        same as the 'models' argument. Empirically, employing a wide variety of
@@ -49,7 +51,7 @@
 learn_allocation_rule <- function(
     models, N_total, N_ini, N_block, Delta, sd_normal,
     # type = c("normal", "general"),
-    optimization_metric = c("MAE", "TD", "power", "MS"),
+    optimization_metric = c("MAE", "TD", "power", "MS", "power and MAE"),
     rl_models = models, rl_models_prior = NULL, rl_seed = NULL,
     rl_config = rl_config(), alpha = 0.025,
     selModel  = c("AIC", "maxT", "aveAIC"), Delta_range = c(0.9, 1.1) * Delta,

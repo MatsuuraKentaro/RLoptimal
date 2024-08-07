@@ -11,7 +11,7 @@ learn_allocation_rule(
   N_block,
   Delta,
   sd_normal,
-  optimization_metric = c("MAE", "TD", "power", "MS"),
+  optimization_metric = c("MAE", "TD", "power", "MS", "power and MAE"),
   rl_models = models,
   rl_models_prior = NULL,
   rl_seed = NULL,
@@ -43,8 +43,10 @@ See \link[DoseFinding]{TD} for details.}
 observation noise.}
 
 \item{optimization_metric}{A character value specifying the metric to
-optimize. Possible values are "MAE" (default), "TD", "power", or "MS".
-See Section 2.2 of the original paper for details.}
+optimize. Possible values are "MAE" (default), "TD", "power", "MS", or
+"power and MAE". See Section 2.2 of the original paper for details.
+"power and MAE" shows performance between "power" and "MAE"
+by setting the reward based on MAE to 0 when not significant.}
 
 \item{rl_models}{An object of class \link[DoseFinding]{Mods}. True dose-response
 models in simulations for reinforcement learning. The default is the
