@@ -172,38 +172,23 @@ class MCPModEnv(gym.Env):
         info: Dict[str, Any]
         if simulation_size >= self.N_total:
             # For sending to R
-            true_dr_model_name: str = RProcess.to_R_notation(self.true_dr_model)
+            optimization_metric: str = RProcess.to_R_notation(self.optimization_metric)
+            true_model_name: str = RProcess.to_R_notation(self.true_dr_model)
             simulated_dose: str = RProcess.to_R_notation(
                 self.doses[self.simulated_actions].tolist())
             simulated_response: str = RProcess.to_R_notation(self.simulated_responses)
             
             self.r_process.execute(f"""
-                scores <- compute_scores({true_dr_model_name}, 
+                reward <- compute_reward({optimization_metric},
+                                         {true_model_name},
                                          {simulated_dose},
                                          {simulated_response})
             """)
-            scores: List[str] = [str(v) for v in self.r_process.get_value("scores", type = "str")]
-            pval: float        = float(scores[0])
-            selmod: str        = scores[1]
-            med: str           = scores[2]  # keep str because it is possibly 'NA'
-            score_power: float = float(scores[3])
-            score_MS : float   = float(scores[4])
-            score_TD: float    = float(scores[5])
-            score_MAE: float   = float(scores[6])
-            info = {"pval": pval, "selmod": selmod, "med": med, 
-                    "score_power": score_power, "score_MS": score_MS, 
-                    "score_TD": score_TD, "score_MAE": score_MAE}
-            optimization_metric: str = "score_" + self.optimization_metric
-            # TODO
-            if optimization_metric not in info: 
-                raise ValueError(f"Metric '{self.optimization_metric}' must be one of power, MS, TD, or MAE.")
-
-            reward = float(info[optimization_metric])
+            reward = self.r_process.get_value("reward")[0]
             terminated = True            
         else:
             reward = 0
             terminated = False
-            info = {}
 
         state: np.ndarray = self._compute_state()
         truncated: bool = False
