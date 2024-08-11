@@ -10,7 +10,8 @@ adjust_significance_level(
   N_total,
   N_ini,
   N_block,
-  sd_normal,
+  outcome_type = c("continuous", "binary"),
+  sd_normal = NULL,
   alpha = 0.025,
   n_sim = 10000L,
   seed = NULL
@@ -32,8 +33,12 @@ or equal to 2. The number of subjects initially assigned to each dose.}
 \item{N_block}{A positive integer value. The number of subjects allocated
 adaptively in each round.}
 
+\item{outcome_type}{A character value specifying the outcome type.
+Possible values are "continuous" (default), and "binary".}
+
 \item{sd_normal}{A positive numeric value. The standard deviation of the
-observation noise.}
+observation noise. When \code{outcome_type} is "continuous",
+\code{sd_normal} must be specified.}
 
 \item{alpha}{A positive numeric value. The original significance level.
 Default is 0.025.}
