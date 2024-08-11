@@ -20,9 +20,8 @@ class MCPModEnv(gym.Env):
     N_total: int
     N_ini: List[int]
     N_block: int
-    std_dev: float
-    
-    optimization_metric: str
+    outcome_type: str
+    sd_normal: float
     
     r_process: RProcess
     
@@ -35,7 +34,7 @@ class MCPModEnv(gym.Env):
     true_response: np.ndarray
     
     simulated_actions: List[int]
-    simulated_responses: List[float]
+    simulated_responses: List[float] | List[int]
 
     def __init__(self, config: Dict[str, Any]) -> None:
         self.doses     = np.array(config["doses"])
@@ -46,10 +45,9 @@ class MCPModEnv(gym.Env):
         self.N_total = config["N_total"]
         self.N_ini   = config["N_ini"]
         self.N_block = config["N_block"]
-        self.std_dev = config["std_dev"]
+        self.outcome_type = config["outcome_type"]
+        self.sd_normal = config["sd_normal"]
 
-        self.optimization_metric = config["optimization_metric"]
-        
         self.r_process = RProcess(config["r_home"])
         self.r_process.execute(config["r_code_to_setup"])
         
@@ -110,26 +108,51 @@ class MCPModEnv(gym.Env):
         
         # Initialize simulation values
         self.simulated_actions = np.repeat(np.arange(self.K), self.N_ini).tolist()
-        self.simulated_responses = self._generate_new_responses(self.simulated_actions)
+        if self.outcome_type == "continuous":
+            self.simulated_responses = self._generate_new_continuous_responses(self.simulated_actions)
+        elif self.outcome_type == "binary":
+            self.simulated_responses = self._generate_new_binary_responses(self.simulated_actions)
         
         state: np.ndarray = self._compute_state()
         info: Dict = {}
         
         return state, info
 
-    def _generate_new_responses(self, actions: List[int]) -> List[float]:
+    def _generate_new_continuous_responses(self, actions: List[int]) -> List[float]:
         """Simulate responses to the actions randomly.
         
         The responses are generated from a normal distribution with the
-        specified variance 'self.std_dev', where the mean is the value of 
+        specified variance 'self.sd_normal', where the mean is the value of 
         the true dose-response curve. For details, see Section 3.1 of the
         original paper.
         
         Returns:
-            np.ndarray: Responses to the actions.
+            List[float]: Responses to the actions.
         """
         return self.np_random.normal(
-            self.true_response[actions], self.std_dev).tolist()
+            self.true_response[actions], self.sd_normal).tolist()
+
+    def _expit(self, x: np.ndarray) -> np.ndarray:
+        """Stably compute the expit values corresponding to each element of x.
+        
+        Returns:
+            np.ndarray: probabilities
+        """
+        x0 = np.vstack([x, np.zeros(len(x))])
+        exp_x = np.exp(x0 - np.max(x0, axis=0))
+        return exp_x[0, :] / np.sum(exp_x, axis=0)
+    
+    def _generate_new_binary_responses(self, actions: List[int]) -> List[int]:
+        """Simulate responses to the actions randomly.
+        
+        The responses are generated from a Bernoulli distribution, 
+        where the probability is the inv_logit value of the true dose-response curve.
+        
+        Returns:
+            List[int]: Responses to the actions.
+        """
+        return self.np_random.binomial(
+            1, self._expit(self.true_response[actions]), size=len(actions)).tolist()
             
     def _compute_state(self) -> np.ndarray:
         """Calculate state s from simulated values.
@@ -158,8 +181,13 @@ class MCPModEnv(gym.Env):
         action: int
     ) -> Tuple[np.ndarray, float, bool, bool, Dict[str, Any]]:
         
-        new_actions: List[int]     = [action] * self.N_block
-        new_responses: List[float] = self._generate_new_responses(new_actions)
+        new_actions: List[int] = [action] * self.N_block
+        new_responses: List[float] | List[int]
+
+        if self.outcome_type == "continuous":
+            new_responses = self._generate_new_continuous_responses(new_actions)
+        elif self.outcome_type == "binary":
+            new_responses = self._generate_new_binary_responses(new_actions)
 
         # Update simulation values
         self.simulated_actions   += new_actions
@@ -171,15 +199,13 @@ class MCPModEnv(gym.Env):
         terminated: bool
         if simulation_size >= self.N_total:
             # For sending to R
-            optimization_metric: str = RProcess.to_R_notation(self.optimization_metric)
             true_model_name: str = RProcess.to_R_notation(self.true_dr_model)
             simulated_dose: str = RProcess.to_R_notation(
                 self.doses[self.simulated_actions].tolist())
             simulated_response: str = RProcess.to_R_notation(self.simulated_responses)
             
             self.r_process.execute(f"""
-                reward <- compute_reward({optimization_metric},
-                                         {true_model_name},
+                reward <- compute_reward({true_model_name},
                                          {simulated_dose},
                                          {simulated_response})
             """)

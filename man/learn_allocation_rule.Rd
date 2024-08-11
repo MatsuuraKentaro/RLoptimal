@@ -10,8 +10,9 @@ learn_allocation_rule(
   N_ini,
   N_block,
   Delta,
-  sd_normal,
-  optimization_metric = c("MAE", "TD", "power", "MS", "power and MAE"),
+  outcome_type = c("continuous", "binary"),
+  sd_normal = NULL,
+  optimization_metric = c("MAE", "power", "TD", "power and MAE"),
   rl_models = models,
   rl_models_prior = NULL,
   rl_seed = NULL,
@@ -26,7 +27,8 @@ learn_allocation_rule(
 }
 \arguments{
 \item{models}{An object of class \link[DoseFinding]{Mods} specifying assumed
-dose-response models.}
+dose-response models. When \code{outcome_type} is "binary", \code{models} should
+be specified on the logit scale.}
 
 \item{N_total}{A positive integer value. The total number of subjects.}
 
@@ -37,21 +39,27 @@ or equal to 2. The number of subjects initially assigned to each dose.}
 adaptively in each round.}
 
 \item{Delta}{A positive numeric value. The clinically relevant target effect.
-See \link[DoseFinding]{TD} for details.}
+When \code{outcome_type} is "binary", \code{Delta} should be specified
+on the logit scale. See \link[DoseFinding]{TD} for details.}
+
+\item{outcome_type}{A character value specifying the outcome type.
+Possible values are "continuous" (default), and "binary".}
 
 \item{sd_normal}{A positive numeric value. The standard deviation of the
-observation noise.}
+observation noise. When \code{outcome_type} is "continuous",
+\code{sd_normal} must be specified.}
 
 \item{optimization_metric}{A character value specifying the metric to
-optimize. Possible values are "MAE" (default), "TD", "power", "MS", or
+optimize. Possible values are "MAE" (default), "power", "TD", or
 "power and MAE". See Section 2.2 of the original paper for details.
 "power and MAE" shows performance between "power" and "MAE"
 by setting the reward based on MAE to 0 when not significant.}
 
 \item{rl_models}{An object of class \link[DoseFinding]{Mods}. True dose-response
 models in simulations for reinforcement learning. The default is the
-same as the 'models' argument. Empirically, employing a wide variety of
-models tends to improve performance.}
+same as the 'models' argument. Empirically, the inclusion of a wide
+variety of models tends to stabilize performance (See RL-MAE incl. exp
+in the supporting information of the original paper).}
 
 \item{rl_models_prior}{A positive numeric vector. The probability or weight
 with which each model in rl_models is selected as the true model in

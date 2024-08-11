@@ -1,25 +1,31 @@
 #' Build an Optimal Adaptive Allocation Rule using Reinforcement Learning
 #'
 #' @param models An object of class \link[DoseFinding]{Mods} specifying assumed
-#'        dose-response models.
+#'        dose-response models. When `outcome_type` is "binary", `models` should 
+#'        be specified on the logit scale.
 #' @param N_total A positive integer value. The total number of subjects.
 #' @param N_ini A positive integer vector in which each element is greater than 
 #'        or equal to 2. The number of subjects initially assigned to each dose. 
 #' @param N_block A positive integer value. The number of subjects allocated
 #'        adaptively in each round.
 #' @param Delta A positive numeric value. The clinically relevant target effect.
-#'        See \link[DoseFinding]{TD} for details.
+#'        When `outcome_type` is "binary", `Delta` should be specified 
+#'        on the logit scale. See \link[DoseFinding]{TD} for details.
+#' @param outcome_type A character value specifying the outcome type. 
+#'        Possible values are "continuous" (default), and "binary".
 #' @param sd_normal A positive numeric value. The standard deviation of the
-#'        observation noise.
+#'        observation noise. When `outcome_type` is "continuous", 
+#'        `sd_normal` must be specified.
 #' @param optimization_metric A character value specifying the metric to
-#'        optimize. Possible values are "MAE" (default), "TD", "power", "MS", or
+#'        optimize. Possible values are "MAE" (default), "power", "TD", or
 #'        "power and MAE". See Section 2.2 of the original paper for details.
 #'        "power and MAE" shows performance between "power" and "MAE" 
 #'        by setting the reward based on MAE to 0 when not significant.
 #' @param rl_models An object of class \link[DoseFinding]{Mods}. True dose-response
 #'        models in simulations for reinforcement learning. The default is the
-#'        same as the 'models' argument. Empirically, employing a wide variety of
-#'        models tends to improve performance.
+#'        same as the 'models' argument. Empirically, the inclusion of a wide 
+#'        variety of models tends to stabilize performance (See RL-MAE incl. exp 
+#'        in the supporting information of the original paper).
 #' @param rl_models_prior A positive numeric vector. The probability or weight
 #'        with which each model in rl_models is selected as the true model in
 #'        the simulation. The default is NULL, which specifies equal probability
@@ -49,9 +55,9 @@
 #'
 #' @export
 learn_allocation_rule <- function(
-    models, N_total, N_ini, N_block, Delta, sd_normal,
-    # type = c("normal", "general"),
-    optimization_metric = c("MAE", "TD", "power", "MS", "power and MAE"),
+    models, N_total, N_ini, N_block, Delta, 
+    outcome_type = c("continuous", "binary"), sd_normal = NULL,
+    optimization_metric = c("MAE", "power", "TD", "power and MAE"),
     rl_models = models, rl_models_prior = NULL, rl_seed = NULL,
     rl_config = rl_config(), alpha = 0.025,
     selModel  = c("AIC", "maxT", "aveAIC"), Delta_range = c(0.9, 1.1) * Delta,
@@ -65,7 +71,6 @@ learn_allocation_rule <- function(
 
   doses <- attr(models, "doses")
   doses <- as.double(doses)
-  # Note: 'doses[1] == 0' is guaranteed by DoseFinding::Mods()
   stopifnot("'doses' must have >=2 distinct values" = length(unique(doses)) >= 2L)
   K <- length(doses)
 
@@ -76,11 +81,16 @@ learn_allocation_rule <- function(
   stopifnot(length(N_ini) == K, N_ini >= 2L)
   stopifnot(length(N_block) == 1L, N_block >= 1L)
   stopifnot((N_total - sum(N_ini)) %% N_block == 0.)
-
+  
   Delta <- as.double(Delta)
-  sd_normal <- as.double(sd_normal)
   stopifnot(length(Delta) == 1L, Delta > 0)
-  stopifnot(length(sd_normal) == 1L, sd_normal > 0)
+  
+  outcome_type <- match.arg(outcome_type)
+  if (outcome_type == "continuous") {
+    stopifnot("sd_normal must be specified when outcome_type = 'continuous'" = !is.null(sd_normal))
+    sd_normal <- as.double(sd_normal)
+    stopifnot(length(sd_normal) == 1L, sd_normal > 0)
+  }
 
   optimization_metric <- match.arg(optimization_metric)
 
@@ -117,8 +127,11 @@ learn_allocation_rule <- function(
   # R environment setup code used in MCPModEnv.py ---------------------------
   # -------------------------------------------------------------------------
   setup_code <- generate_setup_code(
-    doses = doses, models = models, Delta = Delta, rl_models = rl_models,
-    rl_seed = rl_seed, alpha = alpha, selModel = selModel, Delta_range = Delta_range)
+    doses = doses, models = models, Delta = Delta, 
+    outcome_type = outcome_type,
+    optimization_metric = optimization_metric,
+    rl_models = rl_models, rl_seed = rl_seed, 
+    alpha = alpha, selModel = selModel, Delta_range = Delta_range)
 
   # -------------------------------------------------------------------------
   # Execute reinforcement learning ------------------------------------------
@@ -129,10 +142,10 @@ learn_allocation_rule <- function(
   env_config <- list(
     doses = doses, K = K,
     N_total = N_total, N_ini = N_ini, N_block = N_block,
-    std_dev = sd_normal,
+    outcome_type = outcome_type,
+    sd_normal = sd_normal,
     dr_models_names = dr_models_names,
     dr_models_weights = rl_models_prior,
-    optimization_metric = optimization_metric,
     r_home = file.path(R.home("bin"), "R"),
     r_code_to_setup = deparse(setup_code)
   )

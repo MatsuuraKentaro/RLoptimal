@@ -1,5 +1,5 @@
 generate_setup_code <- function(
-    doses, models, Delta, rl_models, rl_seed, alpha, selModel, Delta_range) {
+    doses, models, Delta, outcome_type, optimization_metric, rl_models, rl_seed, alpha, selModel, Delta_range) {
 
   substitute({
     restore_R_object <- function(deparsed_object) {
@@ -9,6 +9,8 @@ generate_setup_code <- function(
     doses <- DOSES
     models <- restore_R_object(MODELS)
     Delta <- DELTA
+    outcome_type <- OUTCOME_TYPE
+    optimization_metric <- OPTIMIZATION_METRIC
     rl_models <- restore_R_object(RL_MODELS)
     seed <- RL_SEED
     alpha <- ALPHA
@@ -63,14 +65,29 @@ generate_setup_code <- function(
     }
 
     # For use in MCPModEnv.py
-    compute_reward <- function(optimization_metric, 
-                               true_model_name, sim_doses, sim_resps) {
-
-      # Execute MCP-Mod (multiple comparison procedure - modeling)
-      result_mcpmod <- DoseFinding::MCPMod(
-        dose = sim_doses, resp = sim_resps, models = models,
-        selModel = model_selection_criterion, alpha = alpha, Delta = Delta,
-        pVal = TRUE, alternative = "one.sided")
+    compute_reward <- function(true_model_name, sim_doses, sim_resps) {
+      
+      if (outcome_type == "binary") {
+        sim_Ns <- unname(tapply(sim_resps, sim_doses, length))
+        sim_resp_rates <- unname(tapply(sim_resps, sim_doses, sum)) / sim_Ns
+        # fit logistic regression (without intercept)
+        logfit <- glm(sim_resp_rates ~ factor(doses) + 0, family = binomial, weights = sim_Ns)
+        mu_hat <- coef(logfit)
+        S_hat <- vcov(logfit)
+      }
+      
+      # Execute MCP-Mod
+      if (outcome_type == "continuous") {
+        result_mcpmod <- DoseFinding::MCPMod(
+          dose = sim_doses, resp = sim_resps, models = models,
+          selModel = model_selection_criterion, alpha = alpha, Delta = Delta,
+          pVal = TRUE, alternative = "one.sided")
+      } else if (outcome_type == "binary") {
+        result_mcpmod <- DoseFinding::MCPMod(
+          dose = doses, resp = mu_hat, S = S_hat, type = "general", models = models,
+          selModel = model_selection_criterion, alpha = alpha, Delta = Delta,
+          pVal = TRUE, alternative = "one.sided")
+      }
       
       # Power (detecting dose-response)
       if (optimization_metric == "power") {
@@ -86,10 +103,17 @@ generate_setup_code <- function(
         if (optimization_metric == "power and MAE") {
           return(0)
         }
-        result_mcpmod <- DoseFinding::MCPMod(
-          dose = sim_doses, resp = sim_resps, models = models,
-          selModel = model_selection_criterion, alpha = 1, Delta = Delta,
-          pVal = TRUE, alternative = "one.sided")
+        if (outcome_type == "continuous") {
+          result_mcpmod <- DoseFinding::MCPMod(
+            dose = sim_doses, resp = sim_resps, models = models,
+            selModel = model_selection_criterion, alpha = 1, Delta = Delta,
+            pVal = TRUE, alternative = "one.sided")
+        } else if (outcome_type == "binary") {
+          result_mcpmod <- DoseFinding::MCPMod(
+            dose = doses, resp = mu_hat, S = S_hat, type = "general", models = models,
+            selModel = model_selection_criterion, alpha = 1, Delta = Delta,
+            pVal = TRUE, alternative = "one.sided")
+        }
       }
       
       selected_model_name <- result_mcpmod$selMod
@@ -102,12 +126,6 @@ generate_setup_code <- function(
         return(reward_TD)
       }
       
-      # MS (accuracy of model selection)
-      if (optimization_metric == "MS") {
-        reward_MS <- ifelse(selected_model_name == true_model_name, 1, 0)  
-        return(reward_MS)
-      }
-    
       # MAE (mean absolute error) (default)
       selected_model <- result_mcpmod$mods[[selected_model_name]]
       estimated_response <- predict(selected_model, predType = "ls-means", doseSeq = doses)
@@ -117,7 +135,9 @@ generate_setup_code <- function(
       reward_MAE <- ifelse(optimization_metric == "power and MAE", max(reward_MAE, 0), reward_MAE)
       return(reward_MAE)
     }
-  }, list(DOSES = doses, MODELS = deparse(models), DELTA = Delta,
+  }, list(DOSES = doses, MODELS = deparse(models), DELTA = Delta, 
+          OUTCOME_TYPE = outcome_type,
+          OPTIMIZATION_METRIC = optimization_metric,
           RL_MODELS = deparse(rl_models), RL_SEED = rl_seed, ALPHA = alpha,
           SEL_MODEL = selModel, DELTA_LOWER = Delta_range[1], DELTA_UPPER = Delta_range[2]))
 }

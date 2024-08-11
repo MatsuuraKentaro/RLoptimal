@@ -13,7 +13,8 @@ simulate_one_study(
   N_ini,
   N_block,
   Delta,
-  sd_normal,
+  outcome_type = c("continuous", "binary"),
+  sd_normal = NULL,
   alpha = 0.025,
   selModel = c("AIC", "maxT", "aveAIC"),
   seed = NULL,
@@ -25,13 +26,15 @@ simulate_one_study(
 specifying an obtained optimal adaptive allocation rule.}
 
 \item{models}{An object of class \link[DoseFinding]{Mods} specifying assumed
-dose-response models. This is used in the MCPMod method at the end of
-this study.}
+dose-response models. When \code{outcome_type} is "binary", \code{models} should
+be specified on the logit scale. This is used in the MCPMod method
+at the end of this study.}
 
 \item{true_model_name}{A character value specifying the true model name.}
 
 \item{true_response}{A numeric vector specifying the true response values of
-the true model.}
+the true model. When \code{outcome_type} is "binary", \code{true_response} should
+be specified on the logit scale.}
 
 \item{N_total}{A positive integer value. The total number of subjects.}
 
@@ -42,10 +45,15 @@ or equal to 2. The number of subjects initially assigned to each dose.}
 adaptively in each round.}
 
 \item{Delta}{A positive numeric value. The clinically relevant target effect.
-See \link[DoseFinding]{TD} for details.}
+When \code{outcome_type} is "binary", \code{Delta} should be specified
+on the logit scale. See \link[DoseFinding]{TD} for details.}
+
+\item{outcome_type}{A character value specifying the outcome type.
+Possible values are "continuous" (default), and "binary".}
 
 \item{sd_normal}{A positive numeric value. The standard deviation of the
-observation noise.}
+observation noise. When \code{outcome_type} is "continuous",
+\code{sd_normal} must be specified.}
 
 \item{alpha}{A positive numeric value. The significance level. Default is 0.025.}
 
