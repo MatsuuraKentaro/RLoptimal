@@ -169,7 +169,6 @@ class MCPModEnv(gym.Env):
 
         reward: float
         terminated: bool
-        info: Dict[str, Any]
         if simulation_size >= self.N_total:
             # For sending to R
             optimization_metric: str = RProcess.to_R_notation(self.optimization_metric)
@@ -185,13 +184,13 @@ class MCPModEnv(gym.Env):
                                          {simulated_response})
             """)
             reward = self.r_process.get_value("reward")[0]
-            terminated = True            
+            terminated = True
         else:
             reward = 0
             terminated = False
 
         state: np.ndarray = self._compute_state()
         truncated: bool = False
-        info = {}
+        info: Dict[str, Any] = {}
         
         return state, reward, terminated, truncated, info

@@ -69,7 +69,7 @@ generate_setup_code <- function(
       # Execute MCP-Mod (multiple comparison procedure - modeling)
       result_mcpmod <- DoseFinding::MCPMod(
         dose = sim_doses, resp = sim_resps, models = models,
-        selModel = model_selection_criterion , alpha = alpha, Delta = Delta,
+        selModel = model_selection_criterion, alpha = alpha, Delta = Delta,
         pVal = TRUE, alternative = "one.sided")
       
       # Power (detecting dose-response)
@@ -88,7 +88,7 @@ generate_setup_code <- function(
         }
         result_mcpmod <- DoseFinding::MCPMod(
           dose = sim_doses, resp = sim_resps, models = models,
-          selModel = model_selection_criterion , alpha = 1, Delta = Delta,
+          selModel = model_selection_criterion, alpha = 1, Delta = Delta,
           pVal = TRUE, alternative = "one.sided")
       }
       
