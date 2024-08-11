@@ -10,8 +10,11 @@
 #'        or equal to 2. The number of subjects initially assigned to each dose. 
 #' @param N_block A positive integer value. The number of subjects allocated
 #'        adaptively in each round.
+#' @param outcome_type A character value specifying the outcome type. 
+#'        Possible values are "continuous" (default), and "binary".
 #' @param sd_normal A positive numeric value. The standard deviation of the
-#'        observation noise.
+#'        observation noise. When `outcome_type` is "continuous", 
+#'        `sd_normal` must be specified.
 #' @param alpha A positive numeric value. The original significance level.
 #'        Default is 0.025.
 #' @param n_sim A positive integer value. The number of simulation studies
@@ -24,9 +27,11 @@
 #' @export
 adjust_significance_level <- function(
     allocation_rule, models,
-    N_total, N_ini, N_block, sd_normal, 
-    # type = c("normal", "general"),
+    N_total, N_ini, N_block, 
+    outcome_type = c("continuous", "binary"), sd_normal = NULL,
     alpha = 0.025, n_sim = 10000L, seed = NULL) {
+  
+  outcome_type <- match.arg(outcome_type)
   
   if (is.null(seed)) {
     seed <- 0
@@ -38,9 +43,11 @@ adjust_significance_level <- function(
   
   p_values <- sapply(seq_len(n_sim), function(simID) {
     res <- simulate_one_study(
-      allocation_rule, models, "flat", true_response,
-      N_total, N_ini, N_block, NULL, sd_normal, alpha, NULL, 
-      simID + seed, "pVal")
+      allocation_rule, models, 
+      true_model_name = "flat", true_response = true_response,
+      N_total = N_total, N_ini = N_ini, N_block = N_block, 
+      Delta = NULL, outcome_type = outcome_type, sd_normal = sd_normal,
+      alpha = alpha, selModel = NULL, seed = simID + seed, eval_type = "pVal")
     res$min_p_value
   })
   adjusted <- unname(quantile(p_values, prob = alpha))
