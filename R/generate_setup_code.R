@@ -1,5 +1,5 @@
 generate_setup_code <- function(
-    doses, models, Delta, outcome_type, optimization_metric, rl_models, rl_seed, alpha, selModel, Delta_range) {
+    doses, models, Delta, outcome_type, optimization_metric, rl_models, alpha, selModel, Delta_range) {
 
   substitute({
     restore_R_object <- function(deparsed_object) {
@@ -12,20 +12,14 @@ generate_setup_code <- function(
     outcome_type <- OUTCOME_TYPE
     optimization_metric <- OPTIMIZATION_METRIC
     rl_models <- restore_R_object(RL_MODELS)
-    seed <- RL_SEED
     alpha <- ALPHA
     Delta_lower <- DELTA_LOWER
     Delta_upper <- DELTA_UPPER
     model_selection_criterion <- SEL_MODEL
 
-    max_dose <- max(doses)
-    placebo_effect <- attr(models, "placEff")
     max_effect <- attr(models, "maxEff")
     true_response_matrix <- DoseFinding::getResp(rl_models, doses = doses)
     true_response_list <- as.list(data.frame(true_response_matrix, check.names = FALSE))
-
-    # Setting a random seed
-    set.seed(seed)
 
     # For use in MCPModEnv.py
     true_responses <- unname(unlist(true_response_list))
@@ -59,7 +53,7 @@ generate_setup_code <- function(
 
     # This has been modified from the formula as described in the original paper.
     compute_reward_MAE <- function(MAE) {
-      scaling_factor <- 0.5 * abs(max_effect - placebo_effect)
+      scaling_factor <- 0.5 * abs(max_effect)
       reward_MAE <- 1 - MAE / scaling_factor
       reward_MAE
     }
@@ -138,6 +132,6 @@ generate_setup_code <- function(
   }, list(DOSES = doses, MODELS = deparse(models), DELTA = Delta, 
           OUTCOME_TYPE = outcome_type,
           OPTIMIZATION_METRIC = optimization_metric,
-          RL_MODELS = deparse(rl_models), RL_SEED = rl_seed, ALPHA = alpha,
+          RL_MODELS = deparse(rl_models), ALPHA = alpha,
           SEL_MODEL = selModel, DELTA_LOWER = Delta_range[1], DELTA_UPPER = Delta_range[2]))
 }
