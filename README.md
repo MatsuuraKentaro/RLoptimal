@@ -168,7 +168,7 @@ allocation_rule <- learn_allocation_rule(
 The above flow can be applied in the same way when the outcome is
 binary. We build the dose-response models to be used in the MCPMod
 method on the logit scale (see [this
-vignette]((https://cran.r-project.org/web/packages/DoseFinding/vignettes/binary_data.html))
+vignette](https://cran.r-project.org/web/packages/DoseFinding/vignettes/binary_data.html)
 of `DoseFinding` package), and specify the argument
 `outcome_type = "binary"` in `learn_allocation_rule` function.
 
