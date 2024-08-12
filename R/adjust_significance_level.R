@@ -42,7 +42,7 @@ adjust_significance_level <- function(
   true_response <- rep(attr(models, "placEff"), K)
   
   p_values <- sapply(seq_len(n_sim), function(simID) {
-    res <- simulate_one_study(
+    res <- simulate_one_trial(
       allocation_rule, models, 
       true_model_name = "flat", true_response = true_response,
       N_total = N_total, N_ini = N_ini, N_block = N_block, 
