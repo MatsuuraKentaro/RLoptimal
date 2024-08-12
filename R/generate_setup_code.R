@@ -18,6 +18,7 @@ generate_setup_code <- function(
     model_selection_criterion <- SEL_MODEL
 
     max_effect <- attr(models, "maxEff")
+    direction <- attr(models, "direction")
     true_response_matrix <- DoseFinding::getResp(rl_models, doses = doses)
     true_response_list <- as.list(data.frame(true_response_matrix, check.names = FALSE))
 
@@ -32,9 +33,9 @@ generate_setup_code <- function(
       # Note: Calculating TD for all DR models is costly, but extracting
       # a single model from 'rl_models' is troublesome.
       # The overhead is about 100ms per execution.
-      lower <- DoseFinding::TD(rl_models, Delta = Delta_lower)
+      lower <- DoseFinding::TD(rl_models, Delta = Delta_lower, direction = direction)
       lower <- unname(lower[true_model_name])
-      upper <- DoseFinding::TD(rl_models, Delta = Delta_upper)
+      upper <- DoseFinding::TD(rl_models, Delta = Delta_upper, direction = direction)
       upper <- unname(upper[true_model_name])
       # TD returns NA for large Delta, so if NA, return Inf.
       lower <- ifelse(is.na(lower), Inf, lower)
