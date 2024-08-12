@@ -112,11 +112,7 @@ AllocationRule <- R6Class(
 
       # Check arguments
       stopifnot(length(doses) == length(resps))
-      if (length(doses) < N_ini) {
-        warning("The length of 'doses' and 'resps' is less than 'N_ini'. You must input all data obtained so far.")
-      }
-
-      # Cast arguments
+      
       doses <- as.numeric(doses)
       responses <- as.numeric(resps)
 
@@ -131,12 +127,17 @@ AllocationRule <- R6Class(
       }
       actions <- action_list[as.character(doses)]
 
-      # Obtain the probabilities of next actions
       d <- data.frame(action = actions, resp = responses)
+      count_per_action <- tapply(d$resp, d$action, length)
+      
+      # Check arguments
+      stopifnot("the number of allocated subjects at each dose should be >= 2" = count_per_action >= 2L)
+      
+      # Obtain the probabilities of next actions
       mean_resps <- tapply(d$resp, d$action, mean)
       shifted_mean_resps <- mean_resps[-1] - mean_resps[1]
       sd_resps <- tapply(d$resp, d$action, function(x) sd(x)*sqrt((length(x) - 1)/length(x)))
-      ratio_per_action <- tapply(d$resp, d$action, length) / N_total
+      ratio_per_action <- count_per_action / N_total
       state <- as.array(unname(c(shifted_mean_resps, sd_resps, ratio_per_action)))
       info <- policy$compute_single_action(state, full_fetch = TRUE)[[3L]]
       action_probs <- info$action_dist_inputs  # array
