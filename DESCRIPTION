@@ -28,5 +28,5 @@ Collate:
     'setup_python.R'
     'zzz.R'
     'cleanup_python_settings.R'
-    'simulate_one_study.R'
+    'simulate_one_trial.R'
     'adjust_significance_level.R'

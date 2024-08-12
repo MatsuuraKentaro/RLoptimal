@@ -1,12 +1,11 @@
-#' Simulate One Study Using an Obtained Optimal Adaptive Allocation Rule
+#' Simulate One Trial Using an Obtained Optimal Adaptive Allocation Rule
 #'
 #' @param allocation_rule An object of class \link[RLoptimal]{AllocationRule}
 #'        specifying an obtained optimal adaptive allocation rule.
 #' @param models An object of class \link[DoseFinding]{Mods} specifying assumed
 #'        dose-response models. When `outcome_type` is "binary", `models` should 
 #'        be specified on the logit scale. This is used in the MCPMod method 
-#'        at the end of this study.
-#' @param true_model_name A character value specifying the true model name.
+#'        at the end of this trial.
 #' @param true_response A numeric vector specifying the true response values of 
 #'        the true model. When `outcome_type` is "binary", `true_response` should 
 #'        be specified on the logit scale.
@@ -27,7 +26,7 @@
 #' @param selModel A character value specifying the model selection criterion
 #'        for dose estimation. Possible values are "AIC" (default), "maxT", or
 #'        "aveAIC". See \link[DoseFinding]{MCPMod} for details.
-#' @param seed An integer value. Random seed for data generation in this study.
+#' @param seed An integer value. Random seed for data generation in this trial.
 #' @param eval_type A character value specifying the evaluation type. Possible 
 #'        values are "all" (default) and "pVal". "all" returns all metrics,
 #'        which contain the minimum p value, the selected model name, 
@@ -38,8 +37,8 @@
 #'        the estimated target dose, and the MAE.
 #'
 #' @export
-simulate_one_study <- function(
-    allocation_rule, models, true_model_name, true_response, 
+simulate_one_trial <- function(
+    allocation_rule, models, true_response, 
     N_total, N_ini, N_block, Delta, 
     outcome_type = c("continuous", "binary"), sd_normal = NULL,
     alpha = 0.025, selModel = c("AIC", "maxT", "aveAIC"), 
