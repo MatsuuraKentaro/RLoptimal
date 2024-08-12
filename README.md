@@ -41,7 +41,7 @@ library(RLoptimal)
 ## Build dose-response models for MCPMod
 
 We build the dose-response models to be used in the MCPMod method, which
-we plan to execute at the end of the study.
+we plan to execute at the end of the clinical trial.
 
 ``` r
 doses <- c(0, 2, 4, 6, 8)
