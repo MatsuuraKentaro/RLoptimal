@@ -44,7 +44,7 @@ adjust_significance_level <- function(
   p_values <- sapply(seq_len(n_sim), function(simID) {
     res <- simulate_one_trial(
       allocation_rule, models, 
-      true_model_name = "flat", true_response = true_response,
+      true_response = true_response,
       N_total = N_total, N_ini = N_ini, N_block = N_block, 
       Delta = NULL, outcome_type = outcome_type, sd_normal = sd_normal,
       alpha = alpha, selModel = NULL, seed = simID + seed, eval_type = "pVal")
