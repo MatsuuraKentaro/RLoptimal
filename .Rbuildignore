@@ -6,3 +6,4 @@ __pycache__
 ^README\.Rmd$
 checkpoints
 allocation_rules
+^LICENSE\.md$
