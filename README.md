@@ -17,8 +17,7 @@ studies.
 
 ## Installation
 
-You can install the development version from
-[GitHub](https://github.com/) with:
+You can install the development version from GitHub as follows.
 
 ``` r
 # install.packages("remotes")
@@ -32,7 +31,7 @@ learning for the example in Section 3 of [the original
 paper](https://doi.org/10.1002/sim.9247).
 
 When you load `RLoptimal` as follows, Python itself and the Python
-packages to conduct reinforcement learning will be installed:
+packages to conduct reinforcement learning will be installed.
 
 ``` r
 library(RLoptimal)
@@ -56,7 +55,7 @@ models <- DoseFinding::Mods(
 ## Learn an allocation rule
 
 We obtain an optimal adaptive allocation rule by executing
-`learn_allocation_rule()` with `models`.
+`learn_allocation_rule()` with the `models`.
 
 ``` r
 allocation_rule <- learn_allocation_rule(
@@ -71,7 +70,7 @@ allocation_rule
 ```
 
 With the default settings, it takes roughly 10-50 seconds per iter, so
-it would take about 3-14 hours if `iter = 1000`.
+it would take about 3-14 hours when `iter = 1000`.
 
 ## How to use the allocation rule
 
@@ -165,7 +164,7 @@ allocation_rule <- learn_allocation_rule(
 
 ## Binary outcome
 
-The above flow can be applied in the same way when the outcome is
+The above workflow can be applied in the same way when the outcome is
 binary. We build the dose-response models to be used in the MCPMod
 method on the logit scale (see [this
 vignette](https://cran.r-project.org/web/packages/DoseFinding/vignettes/binary_data.html)
@@ -205,7 +204,7 @@ function.
 saveRDS(allocation_rule, file = "allocation_rule.RDS")
 ```
 
-To load it, `readRDS` can be used.
+To load it, use `readRDS`.
 
 ``` r
 allocation_rule <- readRDS(file = "allocation_rule.RDS")
@@ -213,8 +212,8 @@ allocation_rule <- readRDS(file = "allocation_rule.RDS")
 
 ### Inputs of `learn_allocation_rule` function
 
-The inputs passed to the `learn_allocation_rule` function are retrieved
-as follows.
+The inputs passed to the `learn_allocation_rule` function can be
+retrieved as follows.
 
 ``` r
 allocation_rule$input
@@ -232,8 +231,9 @@ allocation_rule$resume_learning(iter = 100)
 
 Multiple checkpoints are created by `learn_allocation_rule` function. By
 default, the last checkpoint is used to build an allocation rule. If you
-want to build an allocation rule using another checkpoint, specify the
-directory name created by `learn_allocation_rule` function as follows.
+want to build another allocation rule using another checkpoint, specify
+the directory name created by `learn_allocation_rule` function as
+follows.
 
 ``` r
 another_allocation_rule <- AllocationRule$new(dir = "checkpoints/20240812_051246_00900")
