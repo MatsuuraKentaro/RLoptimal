@@ -15,7 +15,7 @@ learn_allocation_rule(
   optimization_metric = c("MAE", "power", "TD", "power and MAE"),
   rl_models = models,
   rl_models_prior = NULL,
-  rl_seed = NULL,
+  seed = NULL,
   rl_config = rl_config(),
   alpha = 0.025,
   selModel = c("AIC", "maxT", "aveAIC"),
@@ -66,7 +66,7 @@ with which each model in rl_models is selected as the true model in
 the simulation. The default is NULL, which specifies equal probability
 for each model.}
 
-\item{rl_seed}{An integer value. Random seed for reinforcement learning.}
+\item{seed}{An integer value. Random seed for reinforcement learning.}
 
 \item{rl_config}{A list. Other settings for reinforcement learning. See
 \link{rl_config} for details.}

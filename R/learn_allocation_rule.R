@@ -30,7 +30,7 @@
 #'        with which each model in rl_models is selected as the true model in
 #'        the simulation. The default is NULL, which specifies equal probability
 #'        for each model.
-#' @param rl_seed An integer value. Random seed for reinforcement learning.
+#' @param seed An integer value. Random seed for reinforcement learning.
 #' @param rl_config A list. Other settings for reinforcement learning. See
 #'        \link{rl_config} for details.
 #' @param alpha A positive numeric value. The significance level. Default is 0.025.
@@ -58,7 +58,7 @@ learn_allocation_rule <- function(
     models, N_total, N_ini, N_block, Delta, 
     outcome_type = c("continuous", "binary"), sd_normal = NULL,
     optimization_metric = c("MAE", "power", "TD", "power and MAE"),
-    rl_models = models, rl_models_prior = NULL, rl_seed = NULL,
+    rl_models = models, rl_models_prior = NULL, seed = NULL,
     rl_config = rl_config(), alpha = 0.025,
     selModel  = c("AIC", "maxT", "aveAIC"), Delta_range = c(0.9, 1.1) * Delta,
     output_dir = format(Sys.time(), "%Y%m%d_%H%M%S"),
@@ -104,9 +104,9 @@ learn_allocation_rule <- function(
     rl_models_prior <- rl_models_prior / sum(rl_models_prior)
     stopifnot(length(rl_models_prior) == n_models, rl_models_prior > 0)
   }
-  stopifnot(is.null(rl_seed) || length(rl_seed) == 1L)
-  if (!is.null(rl_seed)) {
-    rl_seed <- as.integer(rl_seed)
+  stopifnot(is.null(seed) || length(seed) == 1L)
+  if (!is.null(seed)) {
+    seed <- as.integer(seed)
   }
 
   alpha <- as.double(alpha)
@@ -163,7 +163,7 @@ learn_allocation_rule <- function(
     environment(env = MCPModEnv, env_config = env_config)$
     env_runners(num_env_runners = num_env_runners, num_envs_per_env_runner = 1L)$
     framework(framework = "torch")$
-    debugging(seed = rl_seed)  # Note: NULL is converted to None in Python.
+    debugging(seed = seed)  # Note: NULL is converted to None in Python.
   config <- do.call(config$training, rl_config)
   algo <- config$build()
 
