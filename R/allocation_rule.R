@@ -78,18 +78,18 @@ AllocationRule <- R6Class(
     },
 
     #' @description
-    #' Obtain the probabilities of the next action.
+    #' Compute optimal allocation probabilities using the obtained allocation rule for dose and response data.
     #'
-    #' @param doses A numeric vector. The doses actually administered to each
+    #' @param data_doses A numeric vector. The doses actually administered to each
     #'        participant in your clinical trial. It must include all previous
     #'        doses.
-    #' @param resps A numeric vector. The values of responses corresponding to
-    #'        each participant for the 'doses' argument.
+    #' @param data_resps A numeric vector. The values of responses corresponding to
+    #'        each participant for the 'data_doses' argument.
     #'
-    #' @return A vector of the probabilities of the next action.
+    #' @return A vector of the probabilities of the doses.
     #'
     #' @importFrom glue glue
-    get_next_action_probs = function(doses, resps) {
+    opt_allocation_probs = function(data_doses, data_resps) {
       # If policy has been reset, reload it from the directory where it is stored
       if (is.null(self$policy$config)) {
         # If the directory where policy is stored cannot be found, restore it from the binary data
@@ -108,41 +108,38 @@ AllocationRule <- R6Class(
       env_config <- policy$config$env_config
       K <- policy$action_space$n
       N_total <- env_config$N_total
-      N_ini <- sum(env_config$N_ini)
 
       # Check arguments
-      stopifnot(length(doses) == length(resps))
+      stopifnot(length(data_doses) == length(data_resps))
       
-      doses <- as.numeric(doses)
-      responses <- as.numeric(resps)
+      data_doses <- as.numeric(data_doses)
+      data_resps <- as.numeric(data_resps)
 
-      # Convert doses to actions
-      action_list <- seq_len(K) - 1L
-      dose_list <- env_config$doses
-      names(action_list) <- as.character(dose_list)
-      excluded_doses <- setdiff(unique(doses), dose_list)
+      # Convert data_doses to data_actions
+      actions <- seq_len(K) - 1L
+      doses <- env_config$doses
+      names(actions) <- as.character(doses)
+      excluded_doses <- setdiff(unique(data_doses), doses)
       if (length(excluded_doses) > 0L) {
         excluded_doses <- paste(excluded_doses, collapse = ", ")
         stop(glue("{excluded_doses} is not included in doses on the learning."))
       }
-      actions <- action_list[as.character(doses)]
+      data_actions <- actions[as.character(data_doses)]
 
-      d <- data.frame(action = actions, resp = responses)
-      count_per_action <- tapply(d$resp, d$action, length)
-      
-      # Check arguments
-      stopifnot("the number of allocated subjects at each dose should be >= 2" = count_per_action >= 2L)
-      
       # Obtain the probabilities of next actions
-      mean_resps <- tapply(d$resp, d$action, mean)
+      count_per_action <- tapply(data_resps, data_actions, length)
+      # Check argument
+      stopifnot("the number of allocated subjects at each dose should be >= 2" = count_per_action >= 2L)
+      mean_resps <- tapply(data_resps, data_actions, mean)
       shifted_mean_resps <- mean_resps[-1] - mean_resps[1]
-      sd_resps <- tapply(d$resp, d$action, function(x) sd(x)*sqrt((length(x) - 1)/length(x)))
+      sd_resps <- tapply(data_resps, data_actions, function(x) sd(x)*sqrt((length(x) - 1)/length(x)))
       ratio_per_action <- count_per_action / N_total
       state <- as.array(unname(c(shifted_mean_resps, sd_resps, ratio_per_action)))
       info <- policy$compute_single_action(state, full_fetch = TRUE)[[3L]]
       action_probs <- info$action_dist_inputs  # array
       action_probs <- as.vector(action_probs)  # cast to numeric vector
       action_probs <- softmax(action_probs)
+      names(action_probs) <- as.character(doses)
       action_probs
     },
 

@@ -33,7 +33,7 @@ This class represents an allocation rule that generates a next allocation.
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-AllocationRule-new}{\code{AllocationRule$new()}}
-\item \href{#method-AllocationRule-get_next_action_probs}{\code{AllocationRule$get_next_action_probs()}}
+\item \href{#method-AllocationRule-opt_allocation_probs}{\code{AllocationRule$opt_allocation_probs()}}
 \item \href{#method-AllocationRule-resume_learning}{\code{AllocationRule$resume_learning()}}
 \item \href{#method-AllocationRule-set_info}{\code{AllocationRule$set_info()}}
 \item \href{#method-AllocationRule-print}{\code{AllocationRule$print()}}
@@ -64,28 +64,28 @@ not used otherwise.}
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-AllocationRule-get_next_action_probs"></a>}}
-\if{latex}{\out{\hypertarget{method-AllocationRule-get_next_action_probs}{}}}
-\subsection{Method \code{get_next_action_probs()}}{
-Obtain the probabilities of the next action.
+\if{html}{\out{<a id="method-AllocationRule-opt_allocation_probs"></a>}}
+\if{latex}{\out{\hypertarget{method-AllocationRule-opt_allocation_probs}{}}}
+\subsection{Method \code{opt_allocation_probs()}}{
+Compute optimal allocation probabilities using the obtained allocation rule for dose and response data.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{AllocationRule$get_next_action_probs(doses, resps)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{AllocationRule$opt_allocation_probs(data_doses, data_resps)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{doses}}{A numeric vector. The doses actually administered to each
+\item{\code{data_doses}}{A numeric vector. The doses actually administered to each
 participant in your clinical trial. It must include all previous
 doses.}
 
-\item{\code{resps}}{A numeric vector. The values of responses corresponding to
-each participant for the 'doses' argument.}
+\item{\code{data_resps}}{A numeric vector. The values of responses corresponding to
+each participant for the 'data_doses' argument.}
 }
 \if{html}{\out{</div>}}
 }
 \subsection{Returns}{
-A vector of the probabilities of the next action.
+A vector of the probabilities of the doses.
 }
 }
 \if{html}{\out{<hr>}}

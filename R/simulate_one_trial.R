@@ -80,7 +80,7 @@ simulate_one_trial <- function(
   }
   
   while (length(sim_resps) < N_total) {
-    probs <- allocation_rule$get_next_action_probs(sim_doses, sim_resps)
+    probs <- allocation_rule$opt_allocation_probs(sim_doses, sim_resps)
     ns <- DoseFinding::rndDesign(probs, N_block)
     new_actions <- rep(actions, times = ns)
     new_doses <- doses[new_actions]

@@ -74,14 +74,14 @@ it would take about 3-14 hours when `iter = 1000`.
 
 ## How to use the allocation rule
 
-To compute allocation ratios by using the obtained allocation rule, pass
-dose and response data to `get_next_action_probs()`.
+To compute allocation ratios using the obtained allocation rule, pass
+dose and response data to `opt_allocation_probs()`.
 
 ``` r
 some_doses <- c( 0,  0,  0,  0,  2,  2,  4,  4,  4,  6,  6,   8,  8,   8)
 some_resps <- c(.2, .1, .0, .3, .2, .4, .1, .6, .8, .5, .8, 1.1, .9, 1.6)
 
-allocation_rule$get_next_action_probs(some_doses, some_resps)
+allocation_rule$opt_allocation_probs(some_doses, some_resps)
 ```
 
 ## Simulation-based adjustment of the significance level
