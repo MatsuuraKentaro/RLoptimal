@@ -44,10 +44,9 @@ we plan to execute at the end of the clinical trial.
 
 ``` r
 doses <- c(0, 2, 4, 6, 8)
-maxEff <- 1.65
 
 models <- DoseFinding::Mods(
-  doses = doses, maxEff = maxEff,
+  doses = doses, maxEff = 1.65,
   linear = NULL, emax = 0.79, sigEmax = c(4, 5)
 )
 ```
