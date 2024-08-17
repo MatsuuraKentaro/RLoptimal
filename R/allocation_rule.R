@@ -81,10 +81,10 @@ AllocationRule <- R6Class(
     #' Compute optimal allocation probabilities using the obtained allocation rule for dose and response data.
     #'
     #' @param data_doses A numeric vector. The doses actually administered to each
-    #'        participant in your clinical trial. It must include all previous
+    #'        subject in your clinical trial. It must include all previous
     #'        doses.
     #' @param data_resps A numeric vector. The values of responses corresponding to
-    #'        each participant for the 'data_doses' argument.
+    #'        each subject for the 'data_doses' argument.
     #'
     #' @return A vector of the probabilities of the doses.
     #'

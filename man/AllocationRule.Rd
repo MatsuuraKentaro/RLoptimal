@@ -76,11 +76,11 @@ Compute optimal allocation probabilities using the obtained allocation rule for 
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{data_doses}}{A numeric vector. The doses actually administered to each
-participant in your clinical trial. It must include all previous
+subject in your clinical trial. It must include all previous
 doses.}
 
 \item{\code{data_resps}}{A numeric vector. The values of responses corresponding to
-each participant for the 'data_doses' argument.}
+each subject for the 'data_doses' argument.}
 }
 \if{html}{\out{</div>}}
 }
