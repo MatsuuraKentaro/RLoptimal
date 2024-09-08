@@ -8,7 +8,7 @@
 
 ## Overview
 
-The purpose of this `RLoptimal` package is to easilty construct an
+The purpose of this `RLoptimal` package is to easily construct an
 adaptive allocation rule that directly optimizes a performance metric,
 such as power, accuracy of the estimated target dose, or mean absolute
 error over the estimated dose-response curve. Several high-level
