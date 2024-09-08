@@ -115,12 +115,12 @@ eval_models <- DoseFinding::Mods(
 true_response_matrix <- DoseFinding::getResp(eval_models, doses = doses)
 true_response_list <- as.list(data.frame(true_response_matrix, check.names = FALSE))
 
-N_sim <- 1000  # the number of simulated clinical trials
+n_sim <- 1000  # the number of simulated clinical trials
 d_res <- NULL
 
 for (true_model_name in names(true_response_list)) {
   true_response <- true_response_list[[true_model_name]]  
-  for (simID in seq_len(N_sim)) {
+  for (simID in seq_len(n_sim)) {
     res_one <- simulate_one_trial(
       allocation_rule, models, 
       true_response = true_response,
