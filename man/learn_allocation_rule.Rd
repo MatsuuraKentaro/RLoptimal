@@ -16,7 +16,7 @@ learn_allocation_rule(
   rl_models = models,
   rl_models_prior = NULL,
   seed = NULL,
-  rl_config = rl_config(),
+  rl_config = rl_config_set(),
   alpha = 0.025,
   selModel = c("AIC", "maxT", "aveAIC"),
   Delta_range = c(0.9, 1.1) * Delta,

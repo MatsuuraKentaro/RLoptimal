@@ -61,7 +61,7 @@ allocation_rule <- learn_allocation_rule(
   models,
   N_total = 150, N_ini = rep(10, 5), N_block = 10, Delta = 1.3,
   outcome_type = "continuous", sd_normal = sqrt(4.5), 
-  seed = 123, rl_config = rl_config(iter = 1000),
+  seed = 123, rl_config = rl_config_set(iter = 1000),
   alpha = 0.025
 )
 
@@ -156,7 +156,7 @@ allocation_rule <- learn_allocation_rule(
   models,
   N_total = 150, N_ini = rep(10, 5), N_block = 10, Delta = 1.3,
   outcome_type = "continuous", sd_normal = sqrt(4.5), 
-  seed = 123, rl_models = rl_models, rl_config = rl_config(iter = 1000),
+  seed = 123, rl_models = rl_models, rl_config = rl_config_set(iter = 1000),
   alpha = 0.025
 )
 ```
@@ -184,7 +184,7 @@ allocation_rule <- learn_allocation_rule(
   models,
   N_total = 200, N_ini = rep(10, 5), N_block = 10,
   Delta = 1.4, outcome_type = "binary",
-  seed = 123, rl_config = rl_config(iter = 200),
+  seed = 123, rl_config = rl_config_set(iter = 200),
   alpha = 0.05
 )
 ```

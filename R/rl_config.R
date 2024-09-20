@@ -27,16 +27,16 @@
 #' @return A list of reinforcement learning configuration parameters
 #'
 #' @export
-rl_config <- function(iter = 1000L, 
-                      save_start_iter = NULL,
-                      save_every_iter = NULL,
-                      cores = 4L,
-                      # Common settings
-                      gamma = 1.0, lr = 5e-5,
-                      train_batch_size = 10000L, model = rl_dnn_config(),
-                      # PPO specific settings
-                      sgd_minibatch_size = 200L, num_sgd_iter = 20L,
-                      ...) {
+rl_config_set <- function(iter = 1000L, 
+                          save_start_iter = NULL,
+                          save_every_iter = NULL,
+                          cores = 4L,
+                          # Common settings
+                          gamma = 1.0, lr = 5e-5,
+                          train_batch_size = 10000L, model = rl_dnn_config(),
+                          # PPO specific settings
+                          sgd_minibatch_size = 200L, num_sgd_iter = 20L,
+                          ...) {
   iter <- as.integer(iter)
   save_start_iter <- ifelse(is.null(save_start_iter), 
                             ceiling(iter / 2), as.integer(save_start_iter))
