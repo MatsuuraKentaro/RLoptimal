@@ -1,3 +1,5 @@
+virtualenv_name <- "RLoptimal"
+
 #' Setting up a Python Virtual Environment
 #'
 #' Setting up a Python virtual environment for the Ray package, which includes
@@ -6,8 +8,7 @@
 #' @export
 setup_python <- function() {
   py_version <- "3.11"
-  virtualenv_name <- "RLoptimal"
-  required_packages <- c("numpy==1.26.4", "dm-tree", "lz4", "pyarrow", "gymnasium", "torch",
+  required_packages <- c("numpy", "dm-tree", "lz4", "pyarrow", "gymnasium", "torch",
                          "scikit-image", "pandas", "typer", "ray")
 
   if (is.null(reticulate::virtualenv_starter(py_version))) {
@@ -28,4 +29,11 @@ setup_python <- function() {
   }
   reticulate::use_virtualenv(virtualenv_name)
   invisible(NULL)
+}
+
+#' Clean the Python Virtual Environment
+#' 
+#' @export
+clean_python_settings <- function() {
+  reticulate::virtualenv_remove(virtualenv_name, confirm = TRUE)
 }
