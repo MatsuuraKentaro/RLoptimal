@@ -157,8 +157,8 @@ AllocationRule <- R6Class(
 
       output_path <- self$dirpath
       output_checkpoint_path <- sub("^(.*)_\\d+$", "\\1", checkpoint_path)
-      save_start_iter <- self$input$save_start_iter
-      save_every_iter <- self$input$save_every_iter
+      save_start_iter <- self$input$rl_config$save_start_iter
+      save_every_iter <- self$input$rl_config$save_every_iter
       N_update <- self$info$iterations + iter
 
       n_start <- self$info$iterations + 1L
