@@ -2,6 +2,7 @@
 
 export(AllocationRule)
 export(adjust_significance_level)
+export(clean_python_settings)
 export(learn_allocation_rule)
 export(rl_config_set)
 export(rl_dnn_config)
