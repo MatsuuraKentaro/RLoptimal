@@ -5,9 +5,9 @@ from pandas import DataFrame
 from pandas.core.groupby import DataFrameGroupBy
 from gymnasium.spaces import Discrete, Box, Space
 
-from typing import List, Dict, Tuple, Any
+from typing import List, Dict, Tuple, Any, cast
 
-# from RProcess import RProcess
+# from RProcess import RProcess  # for mypy
 
 class MCPModEnv(gym.Env):
     """Custom environment for the reinforcement leaning allocation"""
@@ -166,16 +166,16 @@ class MCPModEnv(gym.Env):
                                    "response": self.simulated_responses})
         df_grouped: DataFrameGroupBy = df.groupby("action")
 
-        mean_response: np.ndarray = df_grouped.mean()["response"].values
-        shifted_mean_response: np.ndarray = mean_response[1:] - mean_response[0]
-        std_dev_response: np.ndarray = df_grouped.std(ddof=0)["response"].values
-        count_per_action: np.ndarray = df_grouped.size().values
-        ratio_per_action: np.ndarray = count_per_action / self.N_total
+        mean_response = cast(np.ndarray, df_grouped.mean()["response"].values)
+        shifted_mean_response = mean_response[1:] - mean_response[0]
+        std_dev_response = cast(np.ndarray, df_grouped.std(ddof=0)["response"].values)
+        count_per_action = cast(np.ndarray, df_grouped.size().values)
+        ratio_per_action = count_per_action / self.N_total
         
-        state: np.ndarray = np.concatenate(
+        state = np.concatenate(
             (shifted_mean_response, std_dev_response, ratio_per_action))
         
-        return state
+        return state.astype(np.float32)
 
     def step(self, 
         action: int
@@ -190,9 +190,12 @@ class MCPModEnv(gym.Env):
             new_responses = self._generate_new_binary_responses(new_actions)
 
         # Update simulation values
-        self.simulated_actions   += new_actions
-        self.simulated_responses += new_responses
-        
+        self.simulated_actions += new_actions
+        if all(isinstance(x, float) for x in self.simulated_responses):
+            self.simulated_responses += [float(x) for x in new_responses]
+        elif all(isinstance(x, int) for x in self.simulated_responses):
+            self.simulated_responses += [int(x) for x in new_responses]
+
         simulation_size: int = len(self.simulated_actions)
 
         reward: float
@@ -209,7 +212,7 @@ class MCPModEnv(gym.Env):
                                          {simulated_dose},
                                          {simulated_response})
             """)
-            reward = self.r_process.get_value("reward")[0]
+            reward = cast(float, self.r_process.get_value("reward")[0])
             terminated = True
         else:
             reward = 0
