@@ -10,25 +10,20 @@ train_algo <- function(algo, n_start, N_update,
     timer$start()
 
     result <- algo$train()
-
-    if (ray_version() < "2.23.0") {
-      reward_path <- "result$episode_reward_{x}"
-      episode_len_mean <- result$episode_len_mean
-    } else {
-      reward_path <- "result$env_runners$episode_reward_{x}"
-      episode_len_mean <- result$env_runners$episode_len_mean
-    }
-    reward_func <- function(x) eval(parse(text = glue(reward_path)))
-    rewards <- Map(reward_func, c("min", "mean", "max"))
+    
+    return_path <- "result$env_runners$episode_return_{x}"
+    episode_len_mean <- result$env_runners$episode_len_mean
+    return_func <- function(x) eval(parse(text = glue(return_path)))
+    returns <- Map(return_func, c("min", "mean", "max"))
     episode <- data.frame(n = n,
-                          episode_reward_min  = rewards$min,
-                          episode_reward_mean = rewards$mean,
-                          episode_reward_max  = rewards$max,
+                          episode_return_min  = returns$min,
+                          episode_return_mean = returns$mean,
+                          episode_return_max  = returns$max,
                           episode_len_mean    = episode_len_mean)
     episode_data <- rbind(episode_data, episode)
 
-    rewards <- Map(sprintf, rewards, fmt = "%8.4f")
-    # print(glue("{formatC(n, digits)}: Min/Mean/Max reward: {rewards$min}/{rewards$mean}/{rewards$max}"))
+    returns <- Map(sprintf, returns, fmt = "%8.4f")
+    # print(glue("{formatC(n, digits)}: Min/Mean/Max return: {returns$min}/{returns$mean}/{returns$max}"))
 
     # Save checkpoint
     if (n >= save_start_iter && (n - save_start_iter) %% save_every_iter == 0) {
@@ -43,7 +38,7 @@ train_algo <- function(algo, n_start, N_update,
     elapsed_time <- timer$elapsed()
     estimated_remaining <- timer$estimate_remaining(N_update - n)
 
-    print(glue("{formatC(n, digits)}: Min/Mean/Max reward: {rewards$min}/{rewards$mean}/{rewards$max} ({round(elapsed_time)} secs, remaining: {estimated_remaining})"))
+    print(glue("{formatC(n, digits)}: Min/Mean/Max return: {returns$min}/{returns$mean}/{returns$max} ({round(elapsed_time)} secs, remaining: {estimated_remaining})"))
   }
 
   dir_path <- glue("{output_checkpoint_path}_{formatC(n, digits, flag = '0')}")
