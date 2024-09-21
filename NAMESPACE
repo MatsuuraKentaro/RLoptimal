@@ -3,7 +3,7 @@
 export(AllocationRule)
 export(adjust_significance_level)
 export(learn_allocation_rule)
-export(rl_config)
+export(rl_config_set)
 export(rl_dnn_config)
 export(setup_python)
 export(simulate_one_trial)
