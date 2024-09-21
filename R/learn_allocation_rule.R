@@ -32,7 +32,7 @@
 #'        for each model.
 #' @param seed An integer value. Random seed for reinforcement learning.
 #' @param rl_config A list. Other settings for reinforcement learning. See
-#'        \link{rl_config} for details.
+#'        \link{rl_config_set} for details.
 #' @param alpha A positive numeric value. The significance level. Default is 0.025.
 #' @param selModel A character value specifying the model selection criterion
 #'        for dose estimation. Possible values are "AIC" (default), "maxT", or

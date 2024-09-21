@@ -69,7 +69,7 @@ for each model.}
 \item{seed}{An integer value. Random seed for reinforcement learning.}
 
 \item{rl_config}{A list. Other settings for reinforcement learning. See
-\link{rl_config} for details.}
+\link{rl_config_set} for details.}
 
 \item{alpha}{A positive numeric value. The significance level. Default is 0.025.}
 
