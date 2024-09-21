@@ -23,7 +23,7 @@ Collate:
     'allocation_rule.R'
     'generate_setup_code.R'
     'rl_dnn_config.R'
-    'rl_config.R'
+    'rl_config_set.R'
     'learn_allocation_rule.R'
     'setup_python.R'
     'zzz.R'
