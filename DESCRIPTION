@@ -14,6 +14,7 @@ Description: An implementation to compute an optimal adaptive allocation rule
     over the estimated dose-response curve.
 URL: https://github.com/MatsuuraKentaro/RLoptimal
 BugReports: https://github.com/MatsuuraKentaro/RLoptimal/issues
+VignetteBuilder: knitr
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

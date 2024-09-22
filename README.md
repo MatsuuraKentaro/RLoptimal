@@ -4,7 +4,6 @@
 # RLoptimal
 
 <!-- badges: start -->
-
 <!-- badges: end -->
 
 ## Overview
@@ -185,7 +184,7 @@ allocation_rule <- learn_allocation_rule(
   models,
   N_total = 200, N_ini = rep(10, 5), N_block = 10,
   Delta = 1.4, outcome_type = "binary",
-  seed = 123, rl_config = rl_config_set(iter = 400),
+  seed = 123, rl_config = rl_config_set(iter = 1000),
   alpha = 0.05
 )
 ```
