@@ -2,12 +2,11 @@ import gymnasium as gym
 import numpy as np
 import pandas as pd
 from pandas import DataFrame
-from pandas.core.groupby import DataFrameGroupBy
 from gymnasium.spaces import Discrete, Box, Space
 
 from typing import List, Dict, Tuple, Any
 
-# from RProcess import RProcess
+# from RProcess import RProcess  # for mypy
 
 class MCPModEnv(gym.Env):
     """Custom environment for the reinforcement leaning allocation"""
@@ -42,11 +41,11 @@ class MCPModEnv(gym.Env):
         self.dr_models = config["dr_models_names"]
         self.dr_models_weights = config["dr_models_weights"]
 
-        self.N_total = config["N_total"]
-        self.N_ini   = config["N_ini"]
-        self.N_block = config["N_block"]
+        self.N_total      = config["N_total"]
+        self.N_ini        = config["N_ini"]
+        self.N_block      = config["N_block"]
         self.outcome_type = config["outcome_type"]
-        self.sd_normal = config["sd_normal"]
+        self.sd_normal    = config["sd_normal"]
 
         self.r_process = RProcess(config["r_home"])
         self.r_process.execute(config["r_code_to_setup"])
@@ -66,11 +65,9 @@ class MCPModEnv(gym.Env):
         K: int = self.K
         dr_models: List[str] = self.dr_models
         
-        responses: np.ndarray = np.array(self.r_process.get_value("true_responses"))
-        response_list: List[np.ndarray] = \
-            [responses[i:i+K] for i in range(0, len(responses), K)]
-        response_dict: Dict[str, np.ndarray] = \
-            {dr_models[i]: resps for i, resps in enumerate(response_list)}
+        responses = np.array(self.r_process.get_value("true_responses"))
+        response_list = [responses[i:i+K] for i in range(0, len(responses), K)]
+        response_dict = {dr_models[i]: resps for i, resps in enumerate(response_list)}
         return response_dict
 
     def _create_observation_space(self) -> Space:
@@ -82,12 +79,12 @@ class MCPModEnv(gym.Env):
         Returns:
             gymnasium.spaces.Space: Observation space.
         """
-        shifted_mean_low : np.ndarray = np.repeat(-np.inf, self.K - 1)
-        shifted_mean_high: np.ndarray = np.repeat( np.inf, self.K - 1)
-        std_dev_low : np.ndarray = np.repeat(0.0, self.K)
-        std_dev_high: np.ndarray = np.repeat(np.inf, self.K)
-        ratio_low : np.ndarray = np.repeat(0.0, self.K)
-        ratio_high: np.ndarray = np.repeat(1.0, self.K)
+        shifted_mean_low  = np.repeat(-np.inf, self.K - 1)
+        shifted_mean_high = np.repeat( np.inf, self.K - 1)
+        std_dev_low       = np.repeat(0.0, self.K)
+        std_dev_high      = np.repeat(np.inf, self.K)
+        ratio_low         = np.repeat(0.0, self.K)
+        ratio_high        = np.repeat(1.0, self.K)
 
         observation_space: Space = Box(
             low=np.concatenate((shifted_mean_low, std_dev_low, ratio_low)),
@@ -113,8 +110,8 @@ class MCPModEnv(gym.Env):
         elif self.outcome_type == "binary":
             self.simulated_responses = self._generate_new_binary_responses(self.simulated_actions)
         
-        state: np.ndarray = self._compute_state()
-        info: Dict = {}
+        state = self._compute_state()
+        info = {}
         
         return state, info
 
@@ -162,27 +159,26 @@ class MCPModEnv(gym.Env):
         Returns:
             The specific value of the state s.
         """
-        df: DataFrame = DataFrame({"action": self.simulated_actions, 
-                                   "response": self.simulated_responses})
-        df_grouped: DataFrameGroupBy = df.groupby("action")
+        df = DataFrame({"action": self.simulated_actions, 
+                        "response": self.simulated_responses})
+        df_grouped = df.groupby("action")
 
-        mean_response: np.ndarray = df_grouped.mean()["response"].values
-        shifted_mean_response: np.ndarray = mean_response[1:] - mean_response[0]
-        std_dev_response: np.ndarray = df_grouped.std(ddof=0)["response"].values
-        count_per_action: np.ndarray = df_grouped.size().values
-        ratio_per_action: np.ndarray = count_per_action / self.N_total
+        mean_response = df_grouped.mean()["response"].values
+        shifted_mean_response = mean_response[1:] - mean_response[0]
+        std_dev_response = df_grouped.std(ddof=0)["response"].values
+        count_per_action = df_grouped.size().values
+        ratio_per_action = count_per_action / self.N_total
         
-        state: np.ndarray = np.concatenate(
+        state = np.concatenate(
             (shifted_mean_response, std_dev_response, ratio_per_action))
         
-        return state
+        return state.astype(np.float32)
 
     def step(self, 
         action: int
     ) -> Tuple[np.ndarray, float, bool, bool, Dict[str, Any]]:
         
-        new_actions: List[int] = [action] * self.N_block
-        new_responses: List[float] | List[int]
+        new_actions = [action] * self.N_block
 
         if self.outcome_type == "continuous":
             new_responses = self._generate_new_continuous_responses(new_actions)
@@ -192,17 +188,17 @@ class MCPModEnv(gym.Env):
         # Update simulation values
         self.simulated_actions   += new_actions
         self.simulated_responses += new_responses
-        
-        simulation_size: int = len(self.simulated_actions)
+
+        simulation_size = len(self.simulated_actions)
 
         reward: float
         terminated: bool
         if simulation_size >= self.N_total:
             # For sending to R
-            true_model_name: str = RProcess.to_R_notation(self.true_dr_model)
-            simulated_dose: str = RProcess.to_R_notation(
+            true_model_name = RProcess.to_R_notation(self.true_dr_model)
+            simulated_dose = RProcess.to_R_notation(
                 self.doses[self.simulated_actions].tolist())
-            simulated_response: str = RProcess.to_R_notation(self.simulated_responses)
+            simulated_response = RProcess.to_R_notation(self.simulated_responses)
             
             self.r_process.execute(f"""
                 reward <- compute_reward({true_model_name},
@@ -215,8 +211,8 @@ class MCPModEnv(gym.Env):
             reward = 0
             terminated = False
 
-        state: np.ndarray = self._compute_state()
-        truncated: bool = False
-        info: Dict[str, Any] = {}
+        state = self._compute_state()
+        truncated = False
+        info = {}
         
         return state, reward, terminated, truncated, info
