@@ -174,7 +174,7 @@ AllocationRule <- R6Class(
       self$log <- episode_data
       private$set_checkpoints(checkpoints)
 
-      self
+      invisible(self)
     },
 
     #' @description
