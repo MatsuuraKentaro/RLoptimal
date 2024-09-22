@@ -25,6 +25,8 @@ Imports:
     reticulate,
     stats,
     utils
+Suggests:
+    rmarkdown
 Collate:
     'timer.R'
     'train_algo.R'
