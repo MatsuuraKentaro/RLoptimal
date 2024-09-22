@@ -35,7 +35,9 @@
 #'        
 #' @returns A list which contains the minimum p value, the selected model name, 
 #'        the estimated target dose, and the MAE.
-#'
+#' 
+#' @importFrom stats coef binomial glm plogis predict rbinom rnorm vcov
+#' 
 #' @export
 simulate_one_trial <- function(
     allocation_rule, models, true_response, 

@@ -24,6 +24,8 @@
 #'        
 #' @returns A positive numeric value specifying adjusted significance level.
 #'
+#' @importFrom stats quantile
+#'
 #' @export
 adjust_significance_level <- function(
     allocation_rule, models,

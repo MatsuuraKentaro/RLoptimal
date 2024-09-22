@@ -15,6 +15,7 @@ Imports:
     glue,
     R6,
     reticulate,
+    stats,
     utils
 Collate:
     'timer.R'
