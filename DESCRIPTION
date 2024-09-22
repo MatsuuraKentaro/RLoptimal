@@ -27,6 +27,7 @@ Imports:
     stats,
     utils
 Suggests:
+    knitr,
     rmarkdown
 Collate:
     'timer.R'

@@ -1,5 +1,12 @@
 ---
-output: github_document
+title: "Optimal Adaptive Allocation Using Deep Reinforcement Learning"
+author: "Kentaro Matsuura"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Optimal Adaptive Allocation Using Deep Reinforcement Learning}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
