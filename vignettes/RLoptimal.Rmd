@@ -31,6 +31,12 @@ The purpose of this `RLoptimal` package is to easily construct an adaptive alloc
 
 ## Installation
 
+You can install the stable version from CRAN as follows.
+
+```{r eval=FALSE}
+install.packages("RLoptimal")
+```
+
 You can install the development version from GitHub as follows.
 
 ```{r eval=FALSE}
