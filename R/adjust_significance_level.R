@@ -25,6 +25,9 @@
 #' @returns A positive numeric value specifying adjusted significance level.
 #' 
 #' @examples
+#' # We computed `allocation_rule`
+#' # ...
+#' 
 #' # Simulation-based adjustment of the significance level using `allocation_rule`
 #' \dontrun{
 #' adjusted_alpha <- adjust_significance_level(

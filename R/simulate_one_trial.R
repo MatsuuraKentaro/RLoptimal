@@ -38,6 +38,9 @@
 #' 
 #' @examples
 #' \dontrun{  
+#' # We computed `allocation_rule` and `adjusted_alpha`
+#' # ...
+#' 
 #' eval_models <- DoseFinding::Mods(
 #'   doses = doses, maxEff = 1.65,
 #'   linear = NULL, emax = 0.79, sigEmax = c(4, 5), exponential = 1, quadratic = - 1/12
