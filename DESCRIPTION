@@ -17,6 +17,7 @@ BugReports: https://github.com/MatsuuraKentaro/RLoptimal/issues
 VignetteBuilder: knitr
 License: MIT + file LICENSE
 Encoding: UTF-8
+Language: en_US
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports: 
