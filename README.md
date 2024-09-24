@@ -17,6 +17,12 @@ studies.
 
 ## Installation
 
+You can install the stable version from CRAN as follows.
+
+``` r
+install.packages("RLoptimal")
+```
+
 You can install the development version from GitHub as follows.
 
 ``` r
