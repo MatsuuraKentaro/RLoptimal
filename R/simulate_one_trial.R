@@ -36,6 +36,27 @@
 #' @returns A list which contains the minimum p value, the selected model name, 
 #'        the estimated target dose, and the MAE.
 #' 
+#' @examples
+#' \dontrun{  
+#' eval_models <- DoseFinding::Mods(
+#'   doses = doses, maxEff = 1.65,
+#'   linear = NULL, emax = 0.79, sigEmax = c(4, 5), exponential = 1, quadratic = - 1/12
+#' )
+#' true_response_matrix <- DoseFinding::getResp(eval_models, doses = doses)
+#' true_response_list <- as.list(data.frame(true_response_matrix, check.names = FALSE))
+#' 
+#' true_model_name <- "emax"
+#' 
+#' # Simulate one trial using the obtained `allocation_rule` When the true model is "emax"
+#' res_one <- simulate_one_trial(
+#'   allocation_rule, models, 
+#'   true_response = true_response_list[[true_model_name]],
+#'   N_total = 150, N_ini = rep(10, 5), N_block = 10, 
+#'   Delta = 1.3, outcome_type = "continuous", sd_normal = sqrt(4.5),
+#'   alpha = adjusted_alpha, seed = simID, eval_type = "all"
+#' )
+#' }
+#' 
 #' @importFrom stats coef binomial glm plogis predict rbinom rnorm vcov
 #' 
 #' @export

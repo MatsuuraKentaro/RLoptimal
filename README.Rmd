@@ -122,7 +122,7 @@ n_sim <- 1000  # the number of simulated clinical trials
 d_res <- NULL
 
 for (true_model_name in names(true_response_list)) {
-  true_response <- true_response_list[[true_model_name]]  
+  true_response <- true_response_list[[true_model_name]]
   for (simID in seq_len(n_sim)) {
     res_one <- simulate_one_trial(
       allocation_rule, models, 

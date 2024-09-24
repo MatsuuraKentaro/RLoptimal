@@ -98,3 +98,48 @@ An \link{AllocationRule} object.
 \description{
 Build an Optimal Adaptive Allocation Rule using Reinforcement Learning
 }
+\examples{
+library(RLoptimal)
+
+doses <- c(0, 2, 4, 6, 8)
+
+# We build the dose-response models to be used in the MCPMod method, 
+# which we plan to execute at the end of the clinical trial.
+models <- DoseFinding::Mods(
+  doses = doses, maxEff = 1.65,
+  linear = NULL, emax = 0.79, sigEmax = c(4, 5)
+)
+
+# We obtain an optimal adaptive allocation rule by executing 
+# `learn_allocation_rule()` with the `models`.
+\dontrun{
+allocation_rule <- learn_allocation_rule(
+  models,
+  N_total = 150, N_ini = rep(10, 5), N_block = 10, Delta = 1.3,
+  outcome_type = "continuous", sd_normal = sqrt(4.5), 
+  seed = 123, rl_config = rl_config_set(iter = 1000),
+  alpha = 0.025
+)
+}
+
+# It is recommended that the models used in reinforcement learning include 
+# possible models in addition to the models used in the MCPMod method. 
+# Here, we add the exponential model according to the supporting information 
+# in the original paper.
+rl_models <- DoseFinding::Mods(
+  doses = doses, maxEff = 1.65,
+  linear = NULL, emax = 0.79, sigEmax = c(4, 5), exponential = 1
+)
+
+# Then, we specify the argument `rl_models` in `learn_allocation_rule` function.
+\dontrun{
+allocation_rule <- learn_allocation_rule(
+  models,
+  N_total = 150, N_ini = rep(10, 5), N_block = 10, Delta = 1.3,
+  outcome_type = "continuous", sd_normal = sqrt(4.5), 
+  seed = 123, rl_models = rl_models, rl_config = rl_config_set(iter = 1000),
+  alpha = 0.025
+)
+}
+
+}

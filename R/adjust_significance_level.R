@@ -23,6 +23,17 @@
 #'        studies.
 #'        
 #' @returns A positive numeric value specifying adjusted significance level.
+#' 
+#' @examples
+#' # Simulation-based adjustment of the significance level using `allocation_rule`
+#' \dontrun{
+#' adjusted_alpha <- adjust_significance_level(
+#'   allocation_rule, models,
+#'   N_total = 150, N_ini = rep(10, 5), N_block = 10,
+#'   outcome_type = "continuous", sd_normal = sqrt(4.5),
+#'   alpha = 0.025, n_sim = 10000, seed = 123
+#' )
+#' }
 #'
 #' @importFrom stats quantile
 #'

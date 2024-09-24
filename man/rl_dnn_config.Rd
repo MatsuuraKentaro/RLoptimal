@@ -28,3 +28,21 @@ A list of DNN configuration parameters
 DNN (deep neural network) configuration for reinforcement learning.
 For detail, see Section 3.2.6 of the original paper.
 }
+\examples{
+\dontrun{
+allocation_rule <- learn_allocation_rule(
+  models, 
+  N_total = 150, N_ini = rep(10, 5), N_block = 10, Delta = 1.3,
+  outcome_type = "continuous", sd_normal = sqrt(4.5), 
+  seed = 123, 
+  # We change iter to 200 and cores to 8
+  rl_config = rl_config_set(
+    iter = 1000, 
+    # We change the DNN model
+    model = rl_dnn_config(fcnet_hiddens = c(512L, 512L), fcnet_activation = "tanh")
+  ), 
+  alpha = 0.025
+)
+} 
+
+}
