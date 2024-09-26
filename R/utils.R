@@ -17,3 +17,8 @@ compute_MAE <- function(estimated_response, true_response) {
   errors <- shifted_estimates[-1L] - shifted_true[-1L]
   return(mean(abs(errors)))
 }
+
+is_apple_silicon <- function() {
+  sys_info <- Sys.info()
+  sys_info["sysname"] == "Darwin" && sys_info["machine"] == "arm64"
+}

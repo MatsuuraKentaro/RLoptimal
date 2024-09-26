@@ -15,7 +15,7 @@ setup_python <- function(envname = "r-RLoptimal") {
     "pandas==2.2.3", "typer==0.12.5", "ray==2.36.0")
 
   if (is.null(reticulate::virtualenv_starter(py_version))) {
-    reticulate::install_python(py_version)
+    reticulate::install_python(py_version, optimized = !is_apple_silicon())
   }
   if (reticulate::virtualenv_exists(envname)) {
     installed_packages <- reticulate::py_list_packages(envname)$requirement
