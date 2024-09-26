@@ -4,7 +4,10 @@
 \alias{setup_python}
 \title{Setting up a Python Virtual Environment}
 \usage{
-setup_python()
+setup_python(envname = "r-RLoptimal")
+}
+\arguments{
+\item{envname}{Python virtual environment name.}
 }
 \description{
 Setting up a Python virtual environment for the Ray package, which includes

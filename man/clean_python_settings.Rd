@@ -4,7 +4,10 @@
 \alias{clean_python_settings}
 \title{Clean the Python Virtual Environment}
 \usage{
-clean_python_settings()
+clean_python_settings(envname = "r-RLoptimal")
+}
+\arguments{
+\item{envname}{Python virtual environment name.}
 }
 \description{
 Clean the Python Virtual Environment
