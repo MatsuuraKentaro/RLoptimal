@@ -224,6 +224,15 @@ retrieved as follows.
 allocation_rule$input
 ```
 
+### Obtain returns during reinforcement learning
+
+The statistics of returns during reinforcement learning can be retrieved
+as follows.
+
+``` r
+allocation_rule$log
+```
+
 ### Resume learning
 
 Reinforcement learning can be resumed with the following function.
