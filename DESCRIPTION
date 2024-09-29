@@ -6,9 +6,9 @@ Authors@R: c(
     person("Kentaro", "Matsuura", , "matsuurakentaro55@gmail.com", 
            role = c("aut", "cre", "cph"), comment = c(ORCID = "0000-0001-5262-055X")),
     person("Koji", "Makiyama", , "hoxo.smile@gmail.com", role = c("aut", "ctb")))
-Description: Implementation to compute an optimal adaptive allocation rule
+Description: An implementation to compute an optimal adaptive allocation rule
     using deep reinforcement learning in a dose-response study
-    (Matsuura et al. (2022) <doi:10.1002/sim.9247>).
+    (Matsuura et al. (2021) <doi:10.1002/sim.9247>).
     The adaptive allocation rule can directly optimize a performance metric,
     such as power, accuracy of the estimated target dose, or mean absolute error
     over the estimated dose-response curve.
