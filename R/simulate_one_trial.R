@@ -37,7 +37,7 @@
 #'        the estimated target dose, and the MAE.
 #' 
 #' @examples
-#' \dontrun{  
+#' \donttest{  
 #' # We computed `allocation_rule` and `adjusted_alpha`
 #' # ...
 #' 

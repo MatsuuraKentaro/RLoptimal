@@ -60,7 +60,7 @@ Adjust Significance Level on a Simulation Basis
 # ...
 
 # Simulation-based adjustment of the significance level using `allocation_rule`
-\dontrun{
+\donttest{
 adjusted_alpha <- adjust_significance_level(
   allocation_rule, models,
   N_total = 150, N_ini = rep(10, 5), N_block = 10,

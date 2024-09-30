@@ -14,7 +14,7 @@
 #' @return A list of DNN configuration parameters
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' allocation_rule <- learn_allocation_rule(
 #'   models, 
 #'   N_total = 150, N_ini = rep(10, 5), N_block = 10, Delta = 1.3,

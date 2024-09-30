@@ -112,7 +112,7 @@ models <- DoseFinding::Mods(
 
 # We obtain an optimal adaptive allocation rule by executing 
 # `learn_allocation_rule()` with the `models`.
-\dontrun{
+\donttest{
 allocation_rule <- learn_allocation_rule(
   models,
   N_total = 150, N_ini = rep(10, 5), N_block = 10, Delta = 1.3,
@@ -132,7 +132,7 @@ rl_models <- DoseFinding::Mods(
 )
 
 # Then, we specify the argument `rl_models` in `learn_allocation_rule` function.
-\dontrun{
+\donttest{
 allocation_rule <- learn_allocation_rule(
   models,
   N_total = 150, N_ini = rep(10, 5), N_block = 10, Delta = 1.3,

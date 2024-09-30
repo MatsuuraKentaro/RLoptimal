@@ -57,14 +57,14 @@ Mainly settings for the arguments of the training() function.
 Not compatible with the new API stack introduced in Ray 2.10.0.
 }
 \examples{
-\dontrun{
+\donttest{
 allocation_rule <- learn_allocation_rule(
   models, 
   N_total = 150, N_ini = rep(10, 5), N_block = 10, Delta = 1.3,
   outcome_type = "continuous", sd_normal = sqrt(4.5), 
   seed = 123, 
-  # We change `iter` to 200 and `cores` for reinforcement learning to 8
-  rl_config = rl_config_set(iter = 200, cores = 8), 
+  # We change `iter` to 200 and `cores` for reinforcement learning to 2
+  rl_config = rl_config_set(iter = 200, cores = 2), 
   alpha = 0.025
 )
 } 

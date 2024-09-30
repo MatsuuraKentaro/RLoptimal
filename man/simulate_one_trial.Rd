@@ -74,7 +74,7 @@ the estimated target dose, and the MAE.
 Simulate One Trial Using an Obtained Optimal Adaptive Allocation Rule
 }
 \examples{
-\dontrun{  
+\donttest{  
 # We computed `allocation_rule` and `adjusted_alpha`
 # ...
 
