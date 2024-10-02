@@ -14,7 +14,7 @@
 #' @return A list of DNN configuration parameters
 #' 
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' allocation_rule <- learn_allocation_rule(
 #'   models, 
 #'   N_total = 150, N_ini = rep(10, 5), N_block = 10, Delta = 1.3,
@@ -27,8 +27,7 @@
 #'     model = rl_dnn_config(fcnet_hiddens = c(512L, 512L), fcnet_activation = "tanh")
 #'   ), 
 #'   alpha = 0.025
-#' )
-#' } 
+#' )} 
 #'
 #' @export
 rl_dnn_config <- function(

@@ -29,7 +29,7 @@ DNN (deep neural network) configuration for reinforcement learning.
 For detail, see Section 3.2.6 of the original paper.
 }
 \examples{
-\donttest{
+\dontrun{
 allocation_rule <- learn_allocation_rule(
   models, 
   N_total = 150, N_ini = rep(10, 5), N_block = 10, Delta = 1.3,
@@ -42,7 +42,6 @@ allocation_rule <- learn_allocation_rule(
     model = rl_dnn_config(fcnet_hiddens = c(512L, 512L), fcnet_activation = "tanh")
   ), 
   alpha = 0.025
-)
-} 
+)} 
 
 }

@@ -27,7 +27,7 @@
 #' @return A list of reinforcement learning configuration parameters
 #' 
 #' @examples
-#' \donttest{
+#' \dontrun{
 #' allocation_rule <- learn_allocation_rule(
 #'   models, 
 #'   N_total = 150, N_ini = rep(10, 5), N_block = 10, Delta = 1.3,
@@ -36,8 +36,7 @@
 #'   # We change `iter` to 200 and `cores` for reinforcement learning to 2
 #'   rl_config = rl_config_set(iter = 200, cores = 2), 
 #'   alpha = 0.025
-#' )
-#' } 
+#' )} 
 #'
 #' @export
 rl_config_set <- function(iter = 1000L, 

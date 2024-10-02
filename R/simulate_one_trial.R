@@ -37,9 +37,31 @@
 #'        the estimated target dose, and the MAE.
 #' 
 #' @examples
-#' \donttest{  
-#' # We computed `allocation_rule` and `adjusted_alpha`
-#' # ...
+#' library(RLoptimal)
+#' 
+#' doses <- c(0, 2, 4, 6, 8)
+#' 
+#' models <- DoseFinding::Mods(
+#'   doses = doses, maxEff = 1.65,
+#'   linear = NULL, emax = 0.79, sigEmax = c(4, 5)
+#' )
+#' 
+#' \dontrun{
+#' allocation_rule <- learn_allocation_rule(
+#'   models,
+#'   N_total = 150, N_ini = rep(10, 5), N_block = 10, Delta = 1.3,
+#'   outcome_type = "continuous", sd_normal = sqrt(4.5), 
+#'   seed = 123, rl_config = rl_config_set(iter = 1000),
+#'   alpha = 0.025
+#' )
+#'
+#' # Simulation-based adjustment of the significance level using `allocation_rule`
+#' adjusted_alpha <- adjust_significance_level(
+#'   allocation_rule, models,
+#'   N_total = 150, N_ini = rep(10, 5), N_block = 10,
+#'   outcome_type = "continuous", sd_normal = sqrt(4.5),
+#'   alpha = 0.025, n_sim = 10000, seed = 123
+#' )}
 #' 
 #' eval_models <- DoseFinding::Mods(
 #'   doses = doses, maxEff = 1.65,
@@ -51,14 +73,14 @@
 #' true_model_name <- "emax"
 #' 
 #' # Simulate one trial using the obtained `allocation_rule` When the true model is "emax"
+#' \dontrun{
 #' res_one <- simulate_one_trial(
 #'   allocation_rule, models, 
 #'   true_response = true_response_list[[true_model_name]],
 #'   N_total = 150, N_ini = rep(10, 5), N_block = 10, 
 #'   Delta = 1.3, outcome_type = "continuous", sd_normal = sqrt(4.5),
 #'   alpha = adjusted_alpha, seed = simID, eval_type = "all"
-#' )
-#' }
+#' )}
 #' 
 #' @importFrom stats coef binomial glm plogis predict rbinom rnorm vcov
 #' 
