@@ -29,7 +29,8 @@ Imports:
     utils
 Suggests:
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 3.0.0)
 Collate:
     'timer.R'
     'train_algo.R'
@@ -43,3 +44,4 @@ Collate:
     'zzz.R'
     'simulate_one_trial.R'
     'adjust_significance_level.R'
+Config/testthat/edition: 3
