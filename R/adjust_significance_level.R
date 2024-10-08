@@ -96,7 +96,7 @@ adjust_significance_level <- function(
   # Compute adjusted significance level -------------------------------------
   true_response <- rep(attr(models, "placEff"), K)
   
-  p_values <- sapply(seq_len(n_sim), function(simID) {
+  p_values <- vapply(seq_len(n_sim), function(simID) {
     res <- simulate_one_trial(
       allocation_rule, models, 
       true_response = true_response,
@@ -104,7 +104,7 @@ adjust_significance_level <- function(
       Delta = NULL, outcome_type = outcome_type, sd_normal = sd_normal,
       alpha = alpha, selModel = NULL, seed = simID + seed, eval_type = "pVal")
     res$min_p_value
-  })
+  }, double(1L))
   adjusted <- quantile(p_values, prob = alpha, names = FALSE)
   adjusted <- min(adjusted, alpha)
   adjusted
