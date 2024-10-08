@@ -89,21 +89,20 @@ adjust_significance_level <- function(
   n_sim <- as.integer(n_sim)
   stopifnot(length(n_sim) == 1L, n_sim > 0L)
   
-  if (is.null(seed)) {
-    seed <- 0
-  }
-  
   # Compute adjusted significance level -------------------------------------
   placebo_effect <- attr(models, "placEff")
   true_response <- rep(placebo_effect, K)
   
-  p_values <- vapply(seq_len(n_sim), function(simID) {
+  set.seed(seed)  # NOTE: If seed is NULL, it reinitializes as if no seed has been set
+  seeds <- sample.int(.Machine$integer.max, size = n_sim)
+  
+  p_values <- vapply(seq_len(seeds), function(seed) {
     result <- simulate_one_trial(
       allocation_rule, models, 
       true_response = true_response,
       N_total = N_total, N_ini = N_ini, N_block = N_block, 
       Delta = NULL, outcome_type = outcome_type, sd_normal = sd_normal,
-      alpha = alpha, selModel = NULL, seed = simID + seed, eval_type = "pVal")
+      alpha = alpha, selModel = NULL, seed = seed, eval_type = "pVal")
     result$min_p_value
   }, double(1L))
   
