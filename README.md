@@ -4,6 +4,8 @@
 # RLoptimal
 
 <!-- badges: start -->
+
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/RLoptimal)](https://cran.r-project.org/package=RLoptimal)
 <!-- badges: end -->
 
 ## Overview
