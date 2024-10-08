@@ -60,14 +60,40 @@ adjust_significance_level <- function(
     outcome_type = c("continuous", "binary"), sd_normal = NULL,
     alpha = 0.025, n_sim = 10000L, seed = NULL) {
   
+  # Check arguments ---------------------------------------------------------
+  stopifnot("'allocation_rule' needs to be of class AllocationRule" =
+              class(allocation_rule) == "AllocationRule")
+  stopifnot("'models' needs to be of class Mods" = class(models) == "Mods")
+  
+  doses <- attr(models, "doses")
+  K <- length(doses)
+  
+  N_total <- as.integer(N_total)
+  N_ini <- as.integer(N_ini)
+  N_block <- as.integer(N_block)
+  stopifnot(length(N_total) == 1L, N_total >= 1L)
+  stopifnot(length(N_ini) == K, N_ini >= 2L)
+  stopifnot(length(N_block) == 1L, N_block >= 1L)
+  stopifnot((N_total - sum(N_ini)) %% N_block == 0.)
+  
   outcome_type <- match.arg(outcome_type)
+  if (outcome_type == "continuous") {
+    stopifnot("sd_normal must be specified when outcome_type = 'continuous'" =
+                !is.null(sd_normal))
+    sd_normal <- as.double(sd_normal)
+    stopifnot(length(sd_normal) == 1L, sd_normal > 0)
+  }
+  
+  alpha <- as.double(alpha)
+  stopifnot(length(alpha) == 1L, alpha > 0, alpha < 1)
+  n_sim <- as.integer(n_sim)
+  stopifnot(length(n_sim) == 1L, n_sim > 0L)
   
   if (is.null(seed)) {
     seed <- 0
   }
   
-  doses <- attr(models, "doses")
-  K <- length(doses)
+  # Compute adjusted significance level -------------------------------------
   true_response <- rep(attr(models, "placEff"), K)
   
   p_values <- sapply(seq_len(n_sim), function(simID) {

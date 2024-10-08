@@ -1,4 +1,4 @@
-allocation_rule <- list()
+allocation_rule <- structure(list(), class = "AllocationRule")
 doses <- c(0, 2, 4, 6, 8)
 models <- DoseFinding::Mods(
   doses = doses, maxEff = 1.65,
