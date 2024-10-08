@@ -105,7 +105,7 @@ adjust_significance_level <- function(
       alpha = alpha, selModel = NULL, seed = simID + seed, eval_type = "pVal")
     res$min_p_value
   })
-  adjusted <- unname(quantile(p_values, prob = alpha))
+  adjusted <- quantile(p_values, prob = alpha, names = FALSE)
   adjusted <- min(adjusted, alpha)
   adjusted
 }
