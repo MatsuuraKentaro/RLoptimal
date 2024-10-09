@@ -96,7 +96,7 @@ adjust_significance_level <- function(
   set.seed(seed)  # NOTE: If seed is NULL, it reinitializes as if no seed has been set
   seeds <- sample.int(.Machine$integer.max, size = n_sim)
   
-  p_values <- vapply(seq_len(seeds), function(seed) {
+  p_values <- vapply(seeds, function(seed) {
     result <- simulate_one_trial(
       allocation_rule, models, 
       true_response = true_response,
