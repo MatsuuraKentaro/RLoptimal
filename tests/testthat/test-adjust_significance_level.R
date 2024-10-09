@@ -12,20 +12,18 @@ local_mocked_bindings(
   simulate_one_trial = function(...) list(min_p_value = runif(1L))
 )
 
-test_that("when adjusting", {
-  set.seed(1)
+test_that("when not adjusting", {
   act <- adjust_significance_level(allocation_rule, models, 
                                    N_total, N_ini, N_block, sd_normal = 1.0,
-                                   alpha = 0.025)
-  expect_equal(act, expected = 0.0234, tolerance = 1e-3)
+                                   alpha = 0.025, seed = 1)
+  expect_equal(act, expected = 0.025)
 })
 
-test_that("when not adjusting", {
-  set.seed(2)
+test_that("when adjusting", {
   act <- adjust_significance_level(allocation_rule, models, 
                                    N_total, N_ini, N_block, sd_normal = 1.0,
-                                   alpha = 0.025)
-  expect_equal(act, expected = 0.025)
+                                   alpha = 0.025, seed = 3)
+  expect_equal(act, expected = 0.02337515, tolerance = 1e-6)
 })
 
 test_that("result has no name", {
