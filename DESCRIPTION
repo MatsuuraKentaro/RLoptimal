@@ -1,7 +1,7 @@
 Package: RLoptimal
 Type: Package
 Title: Optimal Adaptive Allocation Using Deep Reinforcement Learning
-Version: 1.0.1
+Version: 1.0.1.9000
 Authors@R: c(
     person("Kentaro", "Matsuura", , "matsuurakentaro55@gmail.com", 
            role = c("aut", "cre", "cph"), comment = c(ORCID = "0000-0001-5262-055X")),
