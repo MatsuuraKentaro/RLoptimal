@@ -85,6 +85,16 @@ allocation_rule <- learn_allocation_rule(
 )
 
 allocation_rule
+#> <AllocationRule>
+#> dir: allocation_rules/20241012_065853
+#> created at: 2024-10-12 10:18:51
+#> call:
+#> learn_allocation_rule(models = models, N_total = 150, N_ini = rep(10, 
+#>     5), N_block = 10, Delta = 1.3, outcome_type = "continuous", 
+#>     sd_normal = sqrt(4.5), seed = 123, rl_config = rl_config_set(iter = 1000), 
+#>     alpha = 0.025)
+#> iterations: 1000
+#> checkpoints: 500, 600, 700, 800, 900, 1000
 ```
 
 With the default settings, it takes roughly 10-50 seconds per iter, so it would take about 3-14 hours when `iter = 1000`.
@@ -98,6 +108,16 @@ some_doses <- c( 0,  0,  0,  0,  2,  2,  4,  4,  4,  6,  6,   8,  8,   8)
 some_resps <- c(.2, .1, .0, .3, .2, .4, .1, .6, .8, .5, .8, 1.1, .9, 1.6)
 
 allocation_rule$opt_allocation_probs(some_doses, some_resps)
+#>            0            2            4            6            8 
+#> 3.506682e-01 5.533118e-08 6.740401e-02 2.543487e-05 5.819023e-01
+```
+
+When 10 subjects in the next block are allocated to each dose according to these probabilities, we recommend using `DoseFinding::rndDesign()`.
+
+```{r eval=FALSE}
+probs <- allocation_rule$opt_allocation_probs(some_doses, some_resps)
+DoseFinding::rndDesign(probs, 10)
+#> [1] 4 0 1 0 5
 ```
 
 ## Simulation-based adjustment of the significance level
@@ -112,6 +132,7 @@ adjusted_alpha <- adjust_significance_level(
 )
 
 adjusted_alpha
+#> [1] 0.0221804
 ```
 
 ## How to evaluate the allocation rule
@@ -144,6 +165,13 @@ for (true_model_name in names(true_response_list)) {
 }
 
 head(d_res)
+#>   simID true_model_name  min_p_value selected_model_name estimated_target_dose        MAE
+#> 1     1          linear 3.637147e-04              linear              6.219219 0.01389732
+#> 2     2          linear 1.788856e-03              linear              6.523529 0.03485676
+#> 3     3          linear 2.992331e-07              linear              5.812620 0.08700644
+#> 4     4          linear 3.650607e-03              linear              8.392319 0.25673228
+#> 5     5          linear 2.845267e-04              linear              6.240667 0.01030534
+#> 6     6          linear 3.881463e-03              linear              8.081026 0.22689673
 ```
 
 # Tips
