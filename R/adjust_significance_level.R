@@ -62,7 +62,7 @@ adjust_significance_level <- function(
   
   # Check arguments ---------------------------------------------------------
   stopifnot("'allocation_rule' needs to be of class AllocationRule" =
-              class(allocation_rule) == "AllocationRule")
+              "AllocationRule" %in% class(allocation_rule))
   stopifnot("'models' needs to be of class Mods" = class(models) == "Mods")
   
   doses <- attr(models, "doses")
