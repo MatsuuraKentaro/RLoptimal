@@ -283,5 +283,5 @@ the directory name created by `learn_allocation_rule` function as
 follows.
 
 ``` r
-another_allocation_rule <- AllocationRule$new(dir = "checkpoints/20240812_051246_00900")
+another_allocation_rule <- AllocationRule$new(dir = "checkpoints/20241012_065853_00900")
 ```

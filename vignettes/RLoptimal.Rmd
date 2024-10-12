@@ -257,5 +257,5 @@ allocation_rule$resume_learning(iter = 100)
 Multiple checkpoints are created by `learn_allocation_rule` function. By default, the last checkpoint is used to build an allocation rule. If you want to build another allocation rule using another checkpoint, specify the directory name created by `learn_allocation_rule` function as follows.
 
 ```{r eval=FALSE}
-another_allocation_rule <- AllocationRule$new(dir = "checkpoints/20240812_051246_00900")
+another_allocation_rule <- AllocationRule$new(dir = "checkpoints/20241012_065853_00900")
 ```
