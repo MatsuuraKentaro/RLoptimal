@@ -133,8 +133,8 @@ AllocationRule <- R6Class(
       mean_resps <- tapply(data_resps, data_actions, mean)
       shifted_mean_resps <- mean_resps[-1] - mean_resps[1]
       sd_resps <- tapply(data_resps, data_actions, function(x) sd(x)*sqrt((length(x) - 1)/length(x)))
-      ratio_per_action <- count_per_action / N_total
-      state <- as.array(unname(c(shifted_mean_resps, sd_resps, ratio_per_action)))
+      proportion_per_action <- count_per_action / N_total
+      state <- as.array(unname(c(shifted_mean_resps, sd_resps, proportion_per_action)))
       info <- policy$compute_single_action(state, full_fetch = TRUE)[[3L]]
       action_probs <- info$action_dist_inputs  # array
       action_probs <- as.vector(action_probs)  # cast to numeric vector

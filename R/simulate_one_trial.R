@@ -34,7 +34,8 @@
 #'        minimum p value without fitting models.
 #'        
 #' @returns A list which contains the minimum p value, the selected model name, 
-#'        the estimated target dose, and the MAE.
+#'        the estimated target dose, the MAE, and the proportions of subjects 
+#'        allocated to each dose.
 #' 
 #' @examples
 #' library(RLoptimal)
@@ -165,7 +166,7 @@ simulate_one_trial <- function(
     min_p_value <- min(p_values)
     return(list(min_p_value = min_p_value))
   }
-  
+
   # Execute MCP-Mod
   if (outcome_type == "continuous") {
     result_mcpmod <- DoseFinding::MCPMod(
@@ -180,11 +181,16 @@ simulate_one_trial <- function(
   }
   p_values <- attr(result_mcpmod$MCTtest$tStat, "pVal")
   min_p_value <- min(p_values)
+
+  count_per_action <- tapply(sim_resps, sim_actions, length)
+  proportion_per_action <- count_per_action / N_total
+  names(proportion_per_action) <- sprintf("n_of_%s", as.character(doses))
   
   # No model is selected
   if (is.null(result_mcpmod$selMod)) {
-    return(list(min_p_value = min_p_value, selected_model_name = NA,
-                estimated_target_dose = NA, MAE = NA))
+    return(append(list(min_p_value = min_p_value, selected_model_name = NA,
+                       estimated_target_dose = NA, MAE = NA),
+                  proportion_per_action))
   }
   
   selected_model_name <- result_mcpmod$selMod
@@ -195,6 +201,7 @@ simulate_one_trial <- function(
   estimated_response <- predict(selected_model, predType = "ls-means", doseSeq = doses)
   MAE <- compute_MAE(estimated_response, true_response)
   
-  list(min_p_value = min_p_value, selected_model_name = selected_model_name,
-       estimated_target_dose = estimated_target_dose, MAE = MAE)
+  append(list(min_p_value = min_p_value, selected_model_name = selected_model_name,
+              estimated_target_dose = estimated_target_dose, MAE = MAE),
+         proportion_per_action)
 }

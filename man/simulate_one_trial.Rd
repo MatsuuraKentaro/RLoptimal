@@ -68,7 +68,8 @@ minimum p value without fitting models.}
 }
 \value{
 A list which contains the minimum p value, the selected model name,
-the estimated target dose, and the MAE.
+the estimated target dose, the MAE, and the proportions of subjects
+allocated to each dose.
 }
 \description{
 Simulate One Trial Using an Obtained Optimal Adaptive Allocation Rule
