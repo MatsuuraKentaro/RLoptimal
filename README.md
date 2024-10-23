@@ -148,25 +148,26 @@ true_response_matrix <- DoseFinding::getResp(eval_models, doses = doses)
 true_response_list <- as.list(data.frame(true_response_matrix, check.names = FALSE))
 
 n_sim <- 1000  # the number of simulated clinical trials
-d_res <- NULL
+result_list <- list()
 
 for (true_model_name in names(true_response_list)) {
   true_response <- true_response_list[[true_model_name]]
   for (simID in seq_len(n_sim)) {
-    res_one <- simulate_one_trial(
+    result_one <- simulate_one_trial(
       allocation_rule, models, 
       true_response = true_response,
       N_total = 150, N_ini = rep(10, 5), N_block = 10, 
       Delta = 1.3, outcome_type = "continuous", sd_normal = sqrt(4.5),
       alpha = adjusted_alpha, seed = simID, eval_type = "all"
     )
-    d_res_one <- data.frame(simID = simID, true_model_name = true_model_name, 
-                            res_one, check.names = FALSE)
-    d_res <- rbind(d_res, d_res_one)
+    d_result_one <- data.frame(simID = simID, true_model_name = true_model_name, 
+                               result_one, check.names = FALSE)
+    result_list[[length(result_list) + 1]] <- d_result_one
   }
 }
 
-head(d_res, 10)
+d_result <- do.call(rbind, result_list)
+head(d_result, 10)
 #>    simID true_model_name  min_p_value selected_model_name estimated_target_dose         MAE    n_of_0    n_of_2     n_of_4     n_of_6    n_of_8
 #> 1      1          linear 3.637147e-04              linear              6.219219 0.013897321 0.3066667 0.3866667 0.06666667 0.10000000 0.1400000
 #> 2      2          linear 1.788856e-03              linear              6.523529 0.034856764 0.3933333 0.2400000 0.06666667 0.16666667 0.1333333
