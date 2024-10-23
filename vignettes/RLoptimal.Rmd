@@ -164,8 +164,8 @@ for (true_model_name in names(true_response_list)) {
   }
 }
 
-d_result <- do.call(rbind, sim_list)
-head(d_result, 10)
+d_sim <- do.call(rbind, sim_list)
+head(d_sim, 10)
 #>    simID true_model_name  min_p_value selected_model_name estimated_target_dose         MAE    n_of_0    n_of_2     n_of_4     n_of_6    n_of_8
 #> 1      1          linear 3.637147e-04              linear              6.219219 0.013897321 0.3066667 0.3866667 0.06666667 0.10000000 0.1400000
 #> 2      2          linear 1.788856e-03              linear              6.523529 0.034856764 0.3933333 0.2400000 0.06666667 0.16666667 0.1333333
