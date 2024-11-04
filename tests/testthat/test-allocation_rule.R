@@ -2,9 +2,9 @@ library(RLoptimal)
 
 file_name_for_test <- "for_test"
 # dirpath_for_test <- system.file("allocation_rules", package = "RLoptimal")
-dirpath_for_test <- "/Users/runner/work/RLoptimal/RLoptimal/inst/allocation_rules"
+dirpath_for_test <- "../../RLoptimal/allocation_rules"
 # filepath_for_test <- system.file("allocation_rules/for_test", package = "RLoptimal")
-filepath_for_test <- "/Users/runner/work/RLoptimal/RLoptimal/inst/allocation_rules/for_test"
+filepath_for_test <- "../../RLoptimal/allocation_rules/for_test"
 
 setup_python()
 
