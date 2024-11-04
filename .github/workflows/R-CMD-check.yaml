@@ -46,6 +46,21 @@ jobs:
           extra-packages: any::rcmdcheck
           needs: check
 
+      # Install devtools package if it's not already installed
+      - name: Install devtools package
+        run: |
+          Rscript -e 'if (!requireNamespace("devtools", quietly = TRUE)) install.packages("devtools")'
+
+      # Install the RLoptimal package from the current repository
+      - name: Install RLoptimal package
+        run: |
+          Rscript -e 'devtools::install(".")'
+
+      # Run the setup_python() function from the RLoptimal package
+      - name: Run setup_python function from RLoptimal
+        run: |
+          Rscript -e 'RLoptimal::setup_python()'
+
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
