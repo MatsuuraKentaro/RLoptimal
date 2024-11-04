@@ -2,6 +2,8 @@ file_name_for_test <- "for_test"
 dirpath_for_test <- system.file("allocation_rules", package = "RLoptimal")
 filepath_for_test <- system.file("allocation_rules/for_test", package = "RLoptimal")
 
+setup_python()
+
 test_that("generate object", {
   obj <- AllocationRule$new(dir = filepath_for_test)
   expect_equal(class(obj), c("AllocationRule", "R6"))
@@ -13,18 +15,6 @@ test_that("base_dir", {
 })
 
 obj <- AllocationRule$new(dir = filepath_for_test)
-
-obj$policy$compute_single_action = function(state, full_fetch) {
-  list(
-    1,
-    list(),
-    list(
-      action_dist_inputs = array(
-        c(0.018526321, -0.008715363, -0.006370301, -0.018732509, 0.016656240)
-      )
-    )
-  )
-}
 
 test_that("opt_allocation_probs", {
   doses <- c( 0,  0,  0,  0,  2,  2,  4,  4,  4,  6,  6,   8,  8,   8)
