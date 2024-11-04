@@ -9,6 +9,9 @@ filepath_for_test <- "../../RLoptimal/allocation_rules/for_test"
 print(getwd())
 print(dir(getwd()))
 print(dir("../"))
+print(dir("../../"))
+print(dir("../../../"))
+print(dir("../../../../"))
 
 # setup_python()
 # 
