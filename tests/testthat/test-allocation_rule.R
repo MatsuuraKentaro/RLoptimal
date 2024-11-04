@@ -4,6 +4,8 @@ file_name_for_test <- "for_test"
 dirpath_for_test <- system.file("allocation_rules", package = "RLoptimal")
 filepath_for_test <- system.file("allocation_rules/for_test", package = "RLoptimal")
 
+print(getwd())
+
 setup_python()
 
 test_that("generate object", {
