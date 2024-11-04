@@ -14,6 +14,18 @@ test_that("base_dir", {
 
 obj <- AllocationRule$new(dir = filepath_for_test)
 
+obj$policy$compute_single_action = function(state, full_fetch) {
+  list(
+    1,
+    list(),
+    list(
+      action_dist_inputs = array(
+        c(0.018526321, -0.008715363, -0.006370301, -0.018732509, 0.016656240)
+      )
+    )
+  )
+}
+
 test_that("opt_allocation_probs", {
   doses <- c( 0,  0,  0,  0,  2,  2,  4,  4,  4,  6,  6,   8,  8,   8)
   resps <- c(.2, .1, .0, .3, .2, .4, .1, .6, .8, .5, .8, 1.1, .9, 1.6)
