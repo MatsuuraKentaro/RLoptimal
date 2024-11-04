@@ -1,4 +1,4 @@
-library(RLoptimal)
+skip_on_cran()
 
 file_name_for_test <- "for_test"
 dirpath_for_test <- system.file("extdata", package = "RLoptimal")
