@@ -8,6 +8,8 @@ filepath_for_test <- "../../RLoptimal/allocation_rules/for_test"
 
 print(dir("../../RLoptimal"))
 print(dir("../../../../inst"))
+print(dir(system.file("allocation_rules", package = "RLoptimal")))
+print(dir(system.file("allocation_rules/for_test", package = "RLoptimal")))
 
 # setup_python()
 # 
