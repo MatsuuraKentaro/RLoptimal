@@ -6,12 +6,8 @@ dirpath_for_test <- "../../RLoptimal/allocation_rules"
 # filepath_for_test <- system.file("allocation_rules/for_test", package = "RLoptimal")
 filepath_for_test <- "../../RLoptimal/allocation_rules/for_test"
 
-print(getwd())
-print(dir(getwd()))
-print(dir("../"))
-print(dir("../../"))
-print(dir("../../../"))
-print(dir("../../../../"))
+print(dir("../../RLoptimal"))
+print(dir("../../../../inst"))
 
 # setup_python()
 # 
