@@ -1,8 +1,8 @@
 skip_on_cran()
 
-file_name_for_test <- "for_test"
+file_name_for_test <- "allocation_rule_for_test"
 dirpath_for_test <- system.file("extdata", package = "RLoptimal")
-filepath_for_test <- system.file("extdata/for_test", package = "RLoptimal")
+filepath_for_test <- system.file("extdata/allocation_rule_for_test", package = "RLoptimal")
 
 setup_python()
 
