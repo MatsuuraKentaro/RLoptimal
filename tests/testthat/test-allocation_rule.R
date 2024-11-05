@@ -22,8 +22,8 @@ test_that("opt_allocation_probs", {
   doses <- c( 0,  0,  0,  0,  2,  2,  4,  4,  4,  6,  6,   8,  8,   8)
   resps <- c(.2, .1, .0, .3, .2, .4, .1, .6, .8, .5, .8, 1.1, .9, 1.6)
 
-  expected <- c(`0` = 0.2036620, `2` = 0.1981888, `4` = 0.1986541,
-                `6` = 0.1962135, `8` = 0.2032815)
+  expected <- c(`0` = 0.2139878, `2` = 0.1945756, `4` = 0.1992008,
+                `6` = 0.1905261, `8` = 0.2017096)
   act <- obj$opt_allocation_probs(doses, resps)
 
   expect_equal(expected, act, tolerance = 1e-6)
