@@ -8,3 +8,4 @@ checkpoints
 allocation_rules
 ^LICENSE\.md$
 ^\.github$
+^data-raw$
