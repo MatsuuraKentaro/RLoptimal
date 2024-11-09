@@ -127,14 +127,7 @@ AllocationRule <- R6Class(
       data_actions <- actions[as.character(data_doses)]
 
       # Obtain the probabilities of next actions
-      count_per_action <- tapply(data_resps, data_actions, length)
-      # Check argument
-      stopifnot("the number of allocated subjects at each dose should be >= 2" = count_per_action >= 2L)
-      mean_resps <- tapply(data_resps, data_actions, mean)
-      shifted_mean_resps <- mean_resps[-1] - mean_resps[1]
-      sd_resps <- tapply(data_resps, data_actions, function(x) sd(x)*sqrt((length(x) - 1)/length(x)))
-      proportion_per_action <- count_per_action / N_total
-      state <- as.array(unname(c(shifted_mean_resps, sd_resps, proportion_per_action)))
+      state <- compute_state(data_actions, data_resps, N_total)
       info <- policy$compute_single_action(state, full_fetch = TRUE)[[3L]]
       action_probs <- info$action_dist_inputs  # array
       action_probs <- as.vector(action_probs)  # cast to numeric vector
