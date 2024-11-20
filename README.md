@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/RLoptimal)](https://cran.r-project.org/package=RLoptimal)
-[![Downloads](https://cranlogs.r-pkg.org/badges/RLoptimal)](https://cran.r-project.org/package=RLoptimal)
+[![Downloads](https://cranlogs.r-pkg.org/badges/grand-total/RLoptimal)](https://cran.r-project.org/package=RLoptimal)
 [![R-CMD-check](https://github.com/MatsuuraKentaro/RLoptimal/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/MatsuuraKentaro/RLoptimal/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
