@@ -1,8 +1,6 @@
 #' @importFrom R6 R6Class
-NULL
-
 #' @importFrom utils globalVariables
-NULL
+#' @importFrom stats var
 
 globalVariables("MCPModEnv")
 
