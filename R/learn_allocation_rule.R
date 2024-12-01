@@ -172,7 +172,7 @@ learn_allocation_rule <- function(
     doses = doses, models = models, Delta = Delta, 
     outcome_type = outcome_type,
     optimization_metric = optimization_metric,
-    rl_models = rl_models,
+    rl_models = rl_models, seed = seed,
     alpha = alpha, selModel = selModel, Delta_range = Delta_range)
 
   # -------------------------------------------------------------------------

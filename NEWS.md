@@ -1,6 +1,6 @@
-# RLoptimal (development version)
+# RLoptimal 1.2.0
 
-* Accelerate `compute_state()` to be 2x faster (#28).
+* Fixed an issue where `learn_allocation_rule()` was not reproducible despite setting `seed`.
 
 # RLoptimal 1.1.0
 

@@ -1,11 +1,13 @@
 generate_setup_code <- function(
-    doses, models, Delta, outcome_type, optimization_metric, rl_models, alpha, selModel, Delta_range) {
+    doses, models, Delta, outcome_type, optimization_metric, rl_models, seed, alpha, selModel, Delta_range) {
 
   substitute({
     restore_R_object <- function(deparsed_object) {
       eval(parse(text = deparsed_object))
     }
 
+    set.seed(SEED)
+    
     doses <- DOSES
     models <- restore_R_object(MODELS)
     Delta <- DELTA
@@ -133,6 +135,7 @@ generate_setup_code <- function(
   }, list(DOSES = doses, MODELS = deparse(models), DELTA = Delta, 
           OUTCOME_TYPE = outcome_type,
           OPTIMIZATION_METRIC = optimization_metric,
-          RL_MODELS = deparse(rl_models), ALPHA = alpha,
-          SEL_MODEL = selModel, DELTA_LOWER = Delta_range[1], DELTA_UPPER = Delta_range[2]))
+          RL_MODELS = deparse(rl_models), SEED = seed, 
+          ALPHA = alpha, SEL_MODEL = selModel,
+          DELTA_LOWER = Delta_range[1], DELTA_UPPER = Delta_range[2]))
 }
