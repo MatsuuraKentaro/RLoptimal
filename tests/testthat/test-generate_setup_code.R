@@ -38,6 +38,19 @@ test_that("compute_reward_TD", {
   expect_equal(act, expected = 0)
 })
 
+test_that("compute_MAE", {
+  set.seed(123)
+  x <- rnorm(10)
+  y <- rnorm(10)
+  act <- obj$compute_MAE(x, y)
+  expect_equal(act, expected = 1.8339568)
+})
+
+test_that("compute_reward_MAE", {
+  act <- obj$compute_reward_MAE(0.1)
+  expect_equal(act, expected = 0.87878788)
+})
+
 
 # Large Delta -------------------------------------------------------------
 doses <- c(0, 2, 4, 6, 8)
@@ -88,7 +101,7 @@ code <- generate_setup_code(
   selModel = "AIC", Delta_range = c(0.9, 1.1) * Delta)
 eval(code, obj)
 
-test_that("compute_reward_TD", {
+test_that("compute_reward_TD direction = decreasing", {
   act <- obj$compute_reward_TD(5, "linear")
   expect_equal(act, expected = 0)
   act <- obj$compute_reward_TD(6, "linear")
