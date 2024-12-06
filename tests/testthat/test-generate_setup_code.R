@@ -58,7 +58,7 @@ test_that("compute_reward fit well", {
   df_expected <- data.frame(
     linear = c(0.98473088, 1, 1, 0.98473088),
     emax = c(0.97718847, 1, 1, 0.97718847),
-    sigEmax = c(0.9839088, 1, 1, 0.9839088),
+    sigEmax = c(0.9839088, 1, 1, 0.9839088),  # MacOS: 0.983908858
     row.names = optimization_metrics
   )
   
@@ -75,7 +75,7 @@ test_that("compute_reward fit well", {
       obj$optimization_metric <- optimization_metric
       act <- obj$compute_reward(model_name, sim_doses, sim_resps)
       expected <- df_expected[optimization_metric, model_name]
-      expect_equal(act, expected)
+      expect_equal(act, expected, tolerance = 1e-7)
     }
   }
   
