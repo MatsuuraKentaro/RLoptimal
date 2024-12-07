@@ -1,11 +1,11 @@
 generate_setup_code <- function(
     doses, models, Delta, outcome_type, optimization_metric, rl_models, seed, alpha, selModel, Delta_range) {
-
+  
   substitute({
     restore_R_object <- function(deparsed_object) {
       eval(parse(text = deparsed_object))
     }
-
+    
     set.seed(SEED)
     
     doses <- DOSES
@@ -18,23 +18,23 @@ generate_setup_code <- function(
     Delta_lower <- DELTA_LOWER
     Delta_upper <- DELTA_UPPER
     model_selection_criterion <- SEL_MODEL
-
+    
     max_effect <- attr(models, "maxEff")
     direction <- attr(models, "direction")
     true_response_matrix <- DoseFinding::getResp(rl_models, doses = doses)
     true_response_list <- as.list(data.frame(true_response_matrix, check.names = FALSE))
-
+    
     # For use in MCPModEnv.py
     true_responses <- unname(unlist(true_response_list))
-
+    
     # Utility functions
     lower_all <- DoseFinding::TD(rl_models, Delta = Delta_lower, direction = direction)
     upper_all <- DoseFinding::TD(rl_models, Delta = Delta_upper, direction = direction)
-
+    
     compute_reward_TD <- function(estimated_target_dose, true_model_name) {
       # estimated_target_dose is possibly NA
       if (is.na(estimated_target_dose)) return(0)
-
+      
       lower <- lower_all[[true_model_name]]
       upper <- upper_all[[true_model_name]]
       
@@ -45,45 +45,48 @@ generate_setup_code <- function(
       reward_TD <- ifelse(lower < estimated_target_dose && estimated_target_dose < upper, 1, 0)
       return(reward_TD)
     }
-
+    
     compute_MAE <- function(estimated_response, true_response) {
       shifted_estimates <- estimated_response - estimated_response[1L]
       shifted_true <- true_response - true_response[1L]
       errors <- shifted_estimates[-1L] - shifted_true[-1L]
       mean(abs(errors))
     }
-
+    
     # This has been modified from the formula as described in the original paper.
     compute_reward_MAE <- function(MAE) {
       scaling_factor <- 0.5 * abs(max_effect)
       reward_MAE <- 1 - MAE / scaling_factor
       reward_MAE
     }
-
-    # For use in MCPModEnv.py
-    compute_reward <- function(true_model_name, sim_doses, sim_resps) {
-      
-      if (outcome_type == "binary") {
+    
+    execute_MCPMod <- function (sim_doses, sim_resps, alpha_local) {
+      if (outcome_type == "continuous") {
+        DoseFinding::MCPMod(
+          dose = sim_doses, resp = sim_resps, models = models,
+          selModel = model_selection_criterion, alpha = alpha_local, Delta = Delta,
+          pVal = TRUE, alternative = "one.sided")
+      } else if (outcome_type == "binary") {
         sim_Ns <- unname(tapply(sim_resps, sim_doses, length))
         sim_resp_rates <- unname(tapply(sim_resps, sim_doses, sum)) / sim_Ns
         # fit logistic regression (without intercept)
         logfit <- glm(sim_resp_rates ~ factor(doses) + 0, family = binomial, weights = sim_Ns)
         mu_hat <- coef(logfit)
         S_hat <- vcov(logfit)
-      }
-      
-      # Execute MCP-Mod
-      if (outcome_type == "continuous") {
-        result_mcpmod <- DoseFinding::MCPMod(
-          dose = sim_doses, resp = sim_resps, models = models,
-          selModel = model_selection_criterion, alpha = alpha, Delta = Delta,
-          pVal = TRUE, alternative = "one.sided")
-      } else if (outcome_type == "binary") {
-        result_mcpmod <- DoseFinding::MCPMod(
+        
+        DoseFinding::MCPMod(
           dose = doses, resp = mu_hat, S = S_hat, type = "general", models = models,
-          selModel = model_selection_criterion, alpha = alpha, Delta = Delta,
+          selModel = model_selection_criterion, alpha = alpha_local, Delta = Delta,
           pVal = TRUE, alternative = "one.sided")
+      } else {
+        stop("outcome_type is wrong.")
       }
+    }
+    
+    # For use in MCPModEnv.py
+    compute_reward <- function(true_model_name, sim_doses, sim_resps) {
+      # Execute MCP-Mod
+      result_mcpmod <- execute_MCPMod(sim_doses, sim_resps, alpha)
       
       # Power (detecting dose-response)
       if (optimization_metric == "power") {
@@ -93,23 +96,13 @@ generate_setup_code <- function(
         reward_power <- ifelse(min_p_value < alpha, 1, 0)
         return(reward_power)
       }
-       
+      
       # When no model is selected, fit all models by setting alpha = 1
       if (is.null(result_mcpmod$selMod)) {
         if (optimization_metric == "power and MAE") {
           return(0)
         }
-        if (outcome_type == "continuous") {
-          result_mcpmod <- DoseFinding::MCPMod(
-            dose = sim_doses, resp = sim_resps, models = models,
-            selModel = model_selection_criterion, alpha = 1, Delta = Delta,
-            pVal = TRUE, alternative = "one.sided")
-        } else if (outcome_type == "binary") {
-          result_mcpmod <- DoseFinding::MCPMod(
-            dose = doses, resp = mu_hat, S = S_hat, type = "general", models = models,
-            selModel = model_selection_criterion, alpha = 1, Delta = Delta,
-            pVal = TRUE, alternative = "one.sided")
-        }
+        result_mcpmod <- execute_MCPMod(sim_doses, sim_resps, alpha_local = 1)
       }
       
       selected_model_name <- result_mcpmod$selMod
