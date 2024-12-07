@@ -28,17 +28,16 @@ generate_setup_code <- function(
     true_responses <- unname(unlist(true_response_list))
 
     # Utility functions
+    lower_all <- DoseFinding::TD(rl_models, Delta = Delta_lower, direction = direction)
+    upper_all <- DoseFinding::TD(rl_models, Delta = Delta_upper, direction = direction)
+
     compute_reward_TD <- function(estimated_target_dose, true_model_name) {
       # estimated_target_dose is possibly NA
       if (is.na(estimated_target_dose)) return(0)
 
-      # Note: Calculating TD for all DR models is costly, but extracting
-      # a single model from 'rl_models' is troublesome.
-      # The overhead is about 100ms per execution.
-      lower <- DoseFinding::TD(rl_models, Delta = Delta_lower, direction = direction)
-      lower <- unname(lower[true_model_name])
-      upper <- DoseFinding::TD(rl_models, Delta = Delta_upper, direction = direction)
-      upper <- unname(upper[true_model_name])
+      lower <- lower_all[[true_model_name]]
+      upper <- upper_all[[true_model_name]]
+      
       # TD returns NA for large Delta, so if NA, return Inf.
       lower <- ifelse(is.na(lower), Inf, lower)
       upper <- ifelse(is.na(upper), Inf, upper)
