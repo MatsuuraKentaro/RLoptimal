@@ -144,8 +144,9 @@ simulate_one_trial <- function(
   }
 
   if (outcome_type == "binary") {
-    sim_Ns <- unname(tapply(sim_resps, sim_doses, length))
-    sim_resp_rates <- unname(tapply(sim_resps, sim_doses, sum)) / sim_Ns
+    resps_per_dose <- split(sim_resps, sim_doses)
+    sim_Ns <- vapply(resps_per_dose, length, integer(1L), USE.NAMES = FALSE)
+    sim_resp_rates <- vapply(resps_per_dose, sum, integer(1L), USE.NAMES = FALSE) / sim_Ns
     # fit logistic regression (without intercept)
     logfit <- glm(sim_resp_rates ~ factor(doses) + 0, family = binomial, weights = sim_Ns)
     mu_hat <- coef(logfit)
@@ -182,7 +183,8 @@ simulate_one_trial <- function(
   p_values <- attr(result_mcpmod$MCTtest$tStat, "pVal")
   min_p_value <- min(p_values)
 
-  count_per_action <- tapply(sim_resps, sim_actions, length)
+  resps_per_action <- split(sim_resps, sim_actions)
+  count_per_action <- vapply(resps_per_action, length, integer(1L), USE.NAMES = FALSE)
   proportion_per_action <- count_per_action / N_total
   names(proportion_per_action) <- sprintf("n_of_%s", as.character(doses))
   

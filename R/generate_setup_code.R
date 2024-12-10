@@ -64,8 +64,9 @@ generate_setup_code <- function(
     compute_reward <- function(true_model_name, sim_doses, sim_resps) {
       
       if (outcome_type == "binary") {
-        sim_Ns <- unname(tapply(sim_resps, sim_doses, length))
-        sim_resp_rates <- unname(tapply(sim_resps, sim_doses, sum)) / sim_Ns
+        resps_per_dose <- split(sim_resps, sim_doses)
+        sim_Ns <- vapply(resps_per_dose, length, integer(1L), USE.NAMES = FALSE)
+        sim_resp_rates <- vapply(resps_per_dose, sum, numeric(1L), USE.NAMES = FALSE) / sim_Ns
         # fit logistic regression (without intercept)
         logfit <- glm(sim_resp_rates ~ factor(doses) + 0, family = binomial, weights = sim_Ns)
         mu_hat <- coef(logfit)
