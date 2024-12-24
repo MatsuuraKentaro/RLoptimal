@@ -80,7 +80,7 @@
 #'   true_response = true_response_list[[true_model_name]],
 #'   N_total = 150, N_ini = rep(10, 5), N_block = 10, 
 #'   Delta = 1.3, outcome_type = "continuous", sd_normal = sqrt(4.5),
-#'   alpha = adjusted_alpha, seed = simID, eval_type = "all"
+#'   alpha = adjusted_alpha, seed = 123, eval_type = "all"
 #' )}
 #' 
 #' @importFrom stats coef binomial glm plogis predict rbinom rnorm vcov

@@ -35,7 +35,6 @@ allocation_rule <- learn_allocation_rule(
   N_total = 150, N_ini = rep(10, 5), N_block = 10, Delta = 1.3,
   outcome_type = "continuous", sd_normal = sqrt(4.5), 
   seed = 123, 
-  # We change iter to 200 and cores to 8
   rl_config = rl_config_set(
     iter = 1000, 
     # We change the DNN model
