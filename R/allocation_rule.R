@@ -38,6 +38,8 @@ AllocationRule <- R6Class(
     #' @param base_dir A character value. A directory path that is used as the
     #'        parent directory if the 'dir' argument is a directory name and is
     #'        not used otherwise.
+    #'        
+    #' @importFrom zip zip
     initialize = function(dir = "latest", base_dir = "allocation_rules") {
       # Check arguments
       stopifnot(length(dir) == 1L)
@@ -67,7 +69,7 @@ AllocationRule <- R6Class(
 
       # Compress the policy directory and keep it in binary format in this object
       compressed_policy_file <- tempfile(fileext = ".zip")
-      zip(zipfile = compressed_policy_file, files = list.files(dir, full.names = TRUE))
+      zip::zip(zipfile = compressed_policy_file, files = list.files(dir, full.names = TRUE))
       private$policy_binary <- readBin(compressed_policy_file, what = "raw",
                                        n = file.info(compressed_policy_file)$size)
 
