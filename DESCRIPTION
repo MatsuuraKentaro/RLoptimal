@@ -26,7 +26,8 @@ Imports:
     R6,
     reticulate,
     stats,
-    utils
+    utils,
+    zip
 Suggests:
     knitr,
     rmarkdown,
